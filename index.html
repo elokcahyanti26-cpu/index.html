@@ -4,389 +4,738 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduSel Kelas 8 - Aplikasi Belajar Sel & Mikroskop</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen" 
-      x-data="{ 
-        activeTab: 'materi', 
-        subMateri: 'pengenalan-sel',
-        quizStarted: false,
-        currentQuestionIndex: 0,
-        quizSubmitted: false,
-        score: 0,
-        inputChat: '',
-        messages: [
-            { id: 1, sender: 'bot', text: 'Halo! Saya adalah Asisten Guru Pro IPA AI. Silakan tanyakan apa saja tentang materi Bab 1 Kelas 8: Pengenalan Sel dan Mikroskop!' }
-        ],
-        // State Jawaban Kuis
-        answers: {
-            1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 13: '', 14: '', // Single choice
-            8: [], 9: [], 10: [], // Multi select
-            11: { 'Nukleus': '', 'Vakuola Tumbuhan': '', 'Membran Sel': '' }, // Matching 1
-            12: { 'Makrometer (Pemutar kasar)': '', 'Revolver': '', 'Meja Preparat': '' }, // Matching 2
-            15: { 'Zacharias Janssen': '', 'Antonie van Leeuwenhoek': '', 'Robert Hooke': '' } // Matching 3
-        },
-        // Data Soal
-        questions: [
-            { id: 1, type: 'pilihan-ganda', question: 'Siapakah ilmuwan yang pertama kali menemukan istilah \'sel\' pada tahun 1665 saat mengamati sayatan gabus pohon ek?', options: ['Antony van Leeuwenhoek', 'Robert Hooke', 'Rudolf Virchow', 'Theodor Schwann'], answer: 'Robert Hooke', hint: 'Klik langsung pada area salah satu pilihan jawaban di bawah ini.' },
-            { id: 2, type: 'pilihan-ganda', question: 'Manakah di bawah ini yang merupakan contoh organisme uniseluler?', options: ['Amoeba dan Bakteri', 'Jamur Kuping dan Lumut', 'Cacing Tanah dan Paramecium', 'Semut dan Ganggang Hijau'], answer: 'Amoeba dan Bakteri', hint: 'Pilihlah satu jawaban yang paling tepat.' },
-            { id: 3, type: 'pilihan-ganda', question: 'Organel sel yang berfungsi sebagai pusat kendali seluruh aktivitas sel dan menyimpan materi genetik (DNA) adalah...', options: ['Mitokondria', 'Sitoplasma', 'Nukleus', 'Kloroplas'], answer: 'Nukleus', hint: 'Pilihlah jawaban yang paling tepat.' },
-            { id: 4, type: 'benar-salah', question: 'Pernyataan: Sel hewan memiliki dinding sel yang kaku untuk memberikan perlindungan mekanis dan menjaga bentuk sel tetap stabil.', options: ['Benar', 'Salah'], answer: 'Salah', hint: 'Tentukan keputusanmu dengan mengklik tombol Benar atau Salah.' },
-            { id: 5, type: 'benar-salah', question: 'Pernyataan: Lensa objektif pada mikroskop adalah lensa yang posisinya berada paling dekat dengan mata pengamat saat praktikum.', options: ['Benar', 'Salah'], answer: 'Salah', hint: 'Tentukan apakah pernyataan mengenai posisi lensa objektif mikroskop tersebut Benar atau Salah.' },
-            { id: 6, type: 'benar-salah', question: 'Pernyataan: Sebelum mengamati objek dengan perbesaran tinggi, kita harus mengatur dan memfokuskan bayangan menggunakan lensa objektif perbesaran terendah terlebih dahulu.', options: ['Benar', 'Salah'], answer: 'Benar', hint: 'Tentukan apakah pernyataan prosedur penggunaan mikroskop ini Benar atau Salah.' },
-            { id: 7, type: 'benar-salah', question: 'Pernyataan: Mitokondria adalah tempat berlangsungnya respirasi sel untuk menghasilkan energi utama bagi kelangsungan hidup sel.', options: ['Benar', 'Salah'], answer: 'Benar', hint: 'Tentukan apakah pernyataan fungsi organel sel ini Benar atau Salah.' },
-            { id: 8, type: 'multi-select', question: 'Manakah dari organel berikut yang HANYA dapat ditemukan di dalam sel tumbuhan? (Pilih semua jawaban yang benar):', options: ['Dinding Sel', 'Kloroplas', 'Lisosom', 'Ribosom'], answer: ['Dinding Sel', 'Kloroplas'], hint: 'Soal ini memiliki lebih dari satu jawaban benar. Berikan tanda centang pada opsi yang tepat.' },
-            { id: 9, type: 'multi-select', question: 'Pilihlah bagian-bagian mikroskop yang tergolong ke dalam Bagian Optik (berkaitan langsung dengan jalannya cahaya):', options: ['Lensa Okuler', 'Lensa Objektif', 'Cermin / Lampu Sumber Cahaya', 'Makrometer (Pemutar Kasar)'], answer: ['Lensa Okuler', 'Lensa Objektif', 'Cermin / Lampu Sumber Cahaya'], hint: 'Berikan tanda centang pada opsi yang termasuk komponen optik mikroskop.' },
-            { id: 10, type: 'multi-select', question: 'Manakah pernyataan di bawah ini yang BENAR mengenai perbedaan sel tumbuhan dan sel hewan?', options: ['Sel tumbuhan memiliki bentuk yang tetap karena mempunyai dinding sel', 'Sel hewan memiliki vakuola yang ukurannya sangat besar dibanding sel tumbuhan', 'Sel hewan memiliki sentriol yang membantu proses pembelahan sel', 'Sel tumbuhan tidak memiliki membran sel'], answer: ['Sel tumbuhan memiliki bentuk yang tetap karena mempunyai dinding sel', 'Sel hewan memiliki sentriol yang membantu proses pembelahan sel'], hint: 'Pilih semua karakteristik perbedaan struktur sel yang bernilai benar.' },
-            { id: 11, type: 'matching', question: 'Jodohkanlah organel-organel sel berikut dengan fungsinya secara tepat!', pairs: [
-                { key: 'Nukleus', options: ['Mengatur keluar masuknya zat', 'Menyimpan cadangan makanan', 'Pusat pengendali seluruh metabolisme dan pembawa informasi genik'], correct: 'Pusat pengendali seluruh metabolisme dan pembawa informasi genik' },
-                { key: 'Vakuola Tumbuhan', options: ['Mengatur keluar masuknya zat', 'Menyimpan cadangan makanan', 'Pusat pengendali seluruh metabolisme dan pembawa informasi genik'], correct: 'Menyimpan cadangan makanan' },
-                { key: 'Membran Sel', options: ['Mengatur keluar masuknya zat', 'Menyimpan cadangan makanan', 'Pusat pengendali seluruh metabolisme dan pembawa informasi genik'], correct: 'Mengatur keluar masuknya zat' }
-            ], hint: 'Jodohkan setiap butir di kolom kiri dengan jawaban pasangannya melalui menu dropdown.' },
-            { id: 12, type: 'matching', question: 'Pasangkan bagian mekanis mikroskop berikut ini dengan fungsinya yang paling tepat!', pairs: [
-                { key: 'Makrometer (Pemutar kasar)', options: ['Tempat menaruh objek/sediaan yang akan diamati', 'Mengganti atau memilih tingkat perbesaran lensa objektif', 'Naik-turnkan tabung mikroskop secara cepat untuk mencari fokus awal'], correct: 'Naik-turnkan tabung mikroskop secara cepat untuk mencari fokus awal' },
-                { key: 'Revolver', options: ['Tempat menaruh objek/sediaan yang akan diamati', 'Mengganti atau memilih tingkat perbesaran lensa objektif', 'Naik-turnkan tabung mikroskop secara cepat untuk mencari fokus awal'], correct: 'Mengganti atau memilih tingkat perbesaran lensa objektif' },
-                { key: 'Meja Preparat', options: ['Tempat menaruh objek/sediaan yang akan diamati', 'Mengganti atau memilih tingkat perbesaran lensa objektif', 'Naik-turnkan tabung mikroskop secara cepat untuk mencari fokus awal'], correct: 'Tempat menaruh objek/sediaan yang akan diamati' }
-            ], hint: 'Suaikan bagian komponen mekanik dengan fungsinya.' },
-            { id: 13, type: 'pilihan-ganda', question: 'Mengapa sel tumbuhan cenderung memiliki bentuk yang tetap dan kaku bila dibandingkan dengan sel hewan?', options: ['Karena sel tumbuhan memiliki dinding sel yang tersusun atas selulosa', 'Karena sel tumbuhan memiliki kloroplas untuk fotosintesis', 'Karena sel tumbuhan tidak mempunyai nukleus', 'Karena vakuola sel tumbuhan berukuran sangat kecil'], answer: 'Karena sel tumbuhan memiliki dinding sel yang tersusun atas selulosa', hint: 'Pikirkan organel pelindung terluar yang membedakan sel tumbuhan dari sel hewan.' },
-            { id: 14, type: 'benar-salah', question: 'Pernyataan: Robert Hooke mengamati sel hidup yang sedang aktif membelah diri ketika ia melihat sayatan gabus pohon ek di bawah mikroskop.', options: ['Benar', 'Salah'], answer: 'Salah', hint: 'Ingat kembali fakta sejarah sel gabus, apakah itu struktur sel hidup atau ruangan sel mati kaku.' },
-            { id: 15, type: 'matching', question: 'Jodohkan ilmuwan-ilmuwan hebat berikut dengan kontribusinya bagi dunia mikroskopi!', pairs: [
-                { key: 'Zacharias Janssen', options: ['Menemukan sel pertama kali dari sayatan gabus', 'Ilmuwan pertama yang melihat mikroorganisme hidup di air hujan', 'Diakui sebagai penemu mikroskop pertama pada tahun 1590'], correct: 'Diakui sebagai penemu mikroskop pertama pada tahun 1590' },
-                { key: 'Antonie van Leeuwenhoek', options: ['Menemukan sel pertama kali dari sayatan gabus', 'Ilmuwan pertama yang melihat mikroorganisme hidup di air hujan', 'Diakui sebagai penemu mikroskop pertama pada tahun 1590'], correct: 'Ilmuwan pertama yang melihat mikroorganisme hidup di air hujan' },
-                { key: 'Robert Hooke', options: ['Menemukan sel pertama kali dari sayatan gabus', 'Ilmuwan pertama yang melihat mikroorganisme hidup di air hujan', 'Diakui sebagai penemu mikroskop pertama pada tahun 1590'], correct: 'Menemukan sel pertama kali dari sayatan gabus' }
-            ], hint: 'Hubungkan nama tokoh pionir biologi sel dengan temuan legendarisnya.' }
-        ],
-        // Fungsi Kuis
-        startQuiz() {
-            this.quizStarted = true;
-            this.currentQuestionIndex = 0;
-            this.quizSubmitted = false;
-            this.score = 0;
-            this.answers = { 1:'', 2:'', 3:'', 4:'', 5:'', 6:'', 7:'', 13:'', 14:'', 8:[], 9:[], 10:[], 11:{'Nukleus':'','Vakuola Tumbuhan':'','Membran Sel':''}, 12:{'Makrometer (Pemutar kasar)':'','Revolver':'','Meja Preparat':''}, 15:{'Zacharias Janssen':'','Antonie van Leeuwenhoek':'','Robert Hooke':''} };
-        },
-        toggleMultiSelect(qId, option) {
-            if(this.quizSubmitted) return;
-            let index = this.answers[qId].indexOf(option);
-            if(index > -1) {
-                this.answers[qId].splice(index, 1);
-            } else {
-                this.answers[qId].push(option);
-            }
-        },
-        submitQuiz() {
-            let totalScore = 0;
-            this.questions.forEach((q) => {
-                let userAnswer = this.answers[q.id];
-                if (!userAnswer) return;
-                if (q.type === 'pilihan-ganda' || q.type === 'benar-salah') {
-                    if (userAnswer === q.answer) totalScore += 1;
-                } else if (q.type === 'multi-select') {
-                    let isMatch = q.answer.length === userAnswer.length && q.answer.every(v => userAnswer.includes(v));
-                    if (isMatch) totalScore += 1;
-                } else if (q.type === 'matching') {
-                    let allCorrect = true;
-                    q.pairs.forEach(p => {
-                        if (userAnswer[p.key] !== p.correct) allCorrect = false;
-                    });
-                    if (allCorrect) totalScore += 1;
-                }
-            });
-            this.score = Math.round((totalScore / this.questions.length) * 100);
-            this.quizSubmitted = true;
-        },
-        // Fungsi Chatbot
-        sendChat() {
-            if(!this.inputChat.trim()) return;
-            this.messages.push({ id: Date.now(), sender: 'user', text: this.inputChat });
-            let userText = this.inputChat.toLowerCase();
-            this.inputChat = '';
+<body class="bg-gray-50 font-sans text-gray-800">
 
-            setTimeout(() => {
-                let replyText = 'Pertanyaan yang sangat bagus! Terkait hal tersebut, materi Bab 1 menjelaskan bahwa kesatuan terkecil kehidupan dinamakan sel.';
-                if (userText.includes('hewan') || userText.includes('tumbuhan') || userText.includes('beda')) {
-                    replyText = 'Perbedaan mencoloknya adalah Sel Tumbuhan memiliki Dinding Sel dan Kloroplas, sedangkan Sel Hewan memiliki Sentriol namun tidak memiliki dinding sel.';
-                } else if (userText.includes('mikroskop') || userText.includes('lensa')) {
-                    replyText = 'Bagian Mikroskop terbagi dua: Optik (Lensa okuler, objektif, cermin) dan Mekanik (revolver, makrometer, mikrometer, meja preparat).';
-                } else if (userText.includes('penemu') || userText.includes('sejarah')) {
-                    replyText = 'Istilah sel pertama kali dicetuskan oleh Robert Hooke pada tahun 1665 saat meneliti sayatan tipis gabus pohon ek.';
-                }
-                this.messages.push({ id: Date.now() + 1, sender: 'bot', text: replyText });
-            }, 800);
-        }
-      }"
->
-
-    <div class="max-w-6xl mx-auto px-4 py-6">
-        <header class="flex flex-col md:flex-row md:items-center md:justify-between bg-emerald-700 text-white p-5 rounded-2xl shadow-md mb-6">
-            <div class="flex items-center space-x-4">
-                <div class="bg-white/20 p-3 rounded-xl">
-                    <i class="fa-solid fa-dna text-3xl text-emerald-100"></i>
+    <header class="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-white text-emerald-700 p-2 rounded-lg shadow">
+                    <i class="fa-solid fa-dna text-2xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-extrabold tracking-tight">EduSel Kelas 8</h1>
-                    <p class="text-xs text-emerald-100/90 font-medium mt-0.5">Aplikasi Belajar Sel & Mikroskop Mandiri Interaktif • Kurikulum Merdeka</p>
+                    <h1 class="text-xl font-bold tracking-tight">EduSel Kelas 8</h1>
+                    <p class="text-xs text-emerald-100">Aplikasi Belajar Sel & Mikroskop Interaktif • Kurikulum Merdeka</p>
                 </div>
             </div>
-            
-            <nav class="flex flex-wrap gap-2 mt-4 md:mt-0 bg-emerald-800/60 p-1.5 rounded-xl border border-emerald-600/30">
-                <button @click="activeTab = 'materi'" :class="activeTab === 'materi' ? 'bg-white text-emerald-800 shadow-sm' : 'text-white hover:bg-emerald-600/40'" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-book-open mr-2"></i>Materi
-                </button>
-                <button @click="activeTab = 'kisikisi'" :class="activeTab === 'kisikisi' ? 'bg-white text-emerald-800 shadow-sm' : 'text-white hover:bg-emerald-600/40'" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-table-list mr-2"></i>Kisi-Kisi
-                </button>
-                <button @click="activeTab = 'kuis'" :class="activeTab === 'kuis' ? 'bg-white text-emerald-800 shadow-sm' : 'text-white hover:bg-emerald-600/40'" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-vial-circle-check mr-2"></i>Kuis Interaktif
-                </button>
-                <button @click="activeTab = 'tanyaai'" :class="activeTab === 'tanyaai' ? 'bg-white text-emerald-800 shadow-sm' : 'text-white hover:bg-emerald-600/40'" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200">
-                    <i class="fa-solid fa-robot mr-2"></i>Tanya Guru AI
-                </button>
+            <nav class="flex flex-wrap gap-2">
+                <button onclick="switchTab('materi')" id="nav-materi" class="nav-btn bg-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition shadow">Materi</button>
+                <button onclick="switchTab('kisi-kisi')" id="nav-kisi-kisi" class="nav-btn hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition">Kisi-Kisi</button>
+                <button onclick="switchTab('kuis')" id="nav-kuis" class="nav-btn hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition">Kuis Interaktif</button>
+                <button onclick="switchTab('guru-ai')" id="nav-guru-ai" class="nav-btn hover:bg-emerald-600 px-4 py-2 rounded-lg text-sm font-medium transition">Tanya Guru AI</button>
             </nav>
-        </header>
+        </div>
+    </header>
 
-        <template x-if="activeTab === 'materi'">
-            <div class="space-y-6">
-                <div class="bg-white p-4 rounded-xl shadow-sm flex flex-wrap gap-3 items-center border border-slate-200">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mr-2">Materi Pembelajaran Bab 1:</span>
-                    <button @click="subMateri = 'pengenalan-sel'" :class="subMateri === 'pengenalan-sel' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'" class="flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all">
-                        <i class="fa-solid fa-circle-dot"></i> <span>Pengenalan Sel</span>
+    <main class="max-w-6xl mx-auto px-4 py-8">
+
+        <section id="tab-materi" class="tab-content active">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-2">Materi Pembelajaran Bab 1</h2>
+                <p class="text-sm text-gray-500 mb-6">Pilih topik materi di bawah ini untuk memulai belajar secara terstruktur.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+                    <button onclick="switchSubTab('pengenalan-sel')" id="sub-nav-pengenalan-sel" class="sub-nav-btn flex items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 border-emerald-600 bg-emerald-50 text-emerald-700 font-semibold text-sm transition">
+                        <i class="fa-solid fa-microscope"></i> Pengenalan Sel
                     </button>
-                    <button @click="subMateri = 'alat-mikroskop'" :class="subMateri === 'alat-mikroskop' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'" class="flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all">
-                        <i class="fa-solid fa-microscope"></i> <span>Alat Mikroskop</span>
+                    <button onclick="switchSubTab('alat-mikroskop')" id="sub-nav-alat-mikroskop" class="sub-nav-btn flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-semibold text-sm transition">
+                        <i class="fa-solid fa-gear"></i> Alat Mikroskop
                     </button>
-                    <button @click="subMateri = 'perbandingan-sel'" :class="subMateri === 'perbandingan-sel' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' : 'bg-white border-slate-200 hover:bg-slate-50'" class="flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold border transition-all">
-                        <i class="fa-solid fa-scale-balanced"></i> <span>Perbandingan Sel</span>
+                    <button onclick="switchSubTab('perbandingan-sel')" id="sub-nav-perbandingan-sel" class="sub-nav-btn flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 font-semibold text-sm transition">
+                        <i class="fa-solid fa-scale-balanced"></i> Perbandingan Sel
                     </button>
                 </div>
 
-                <template x-if="subMateri === 'pengenalan-sel'">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                <div id="sub-tab-pengenalan-sel" class="sub-tab-content active space-y-6">
+                    <div class="border-l-4 border-emerald-600 pl-4">
+                        <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Materi Utama</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-1">Pengenalan Sel</h3>
+                        <p class="text-gray-500 italic text-sm">Unit Terkecil Kehidupan</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <span class="inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-1 rounded mb-2">Sejarah</span>
+                        <h4 class="font-bold text-lg mb-1">1. Apa itu Sel?</h4>
+                        <p class="text-gray-700 leading-relaxed text-sm">Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh <strong>Robert Hooke</strong> pada tahun 1665 saat mengamati sayatan gabus pohon ek di bawah mikroskop sederhana. Teori sel modern menyatakan bahwa semua makhluk hidup terdiri dari satu atau lebih sel, dan semua sel berasal dari sel yang sudah ada sebelumnya.</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <span class="inline-block bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded mb-2">Klasifikasi</span>
+                        <h4 class="font-bold text-lg mb-2">2. Spesialisasi Sel (Uniseluler vs Multiseluler)</h4>
+                        <p class="text-sm text-gray-600 mb-3">Makhluk hidup dapat dibagi berdasarkan jumlah sel penyusunnya:</p>
+                        <ul class="space-y-2 text-sm text-gray-700 list-disc pl-5">
+                            <li><strong>Uniseluler:</strong> Organisme yang hanya terdiri dari satu sel tunggal. (Contoh: Bakteri, Amoeba, Paramecium).</li>
+                            <li><strong>Multiseluler:</strong> Organisme yang terdiri dari banyak sel yang bekerja sama. (Contoh: Manusia, Hewan, Tumbuhan). Pada organisme multiseluler, terjadi spesialisasi sel di mana sel memiliki bentuk dan fungsi yang berbeda-beda.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <span class="inline-block bg-purple-100 text-purple-800 text-xs font-bold px-2 py-1 rounded mb-2">Organel</span>
+                        <h4 class="font-bold text-lg mb-2">3. Organel Sel (Bagian di dalam Sel)</h4>
+                        <p class="text-sm text-gray-600 mb-3">Organel adalah struktur khusus di dalam sel yang menjalankan fungsi spesifik:</p>
+                        <ul class="space-y-2 text-sm text-gray-700 list-disc pl-5">
+                            <li><strong>Nukleus (Inti Sel):</strong> Pusat kendali sel, menyimpan informasi genetik (DNA).</li>
+                            <li><strong>Membran Sel:</strong> Pelindung terluar yang mengatur keluar masuknya zat.</li>
+                            <li><strong>Sitoplasma:</strong> Cairan tempat berlangsungnya reaksi kimia sel.</li>
+                            <li><strong>Mitokondria:</strong> Tempat penghasil energi (respirasi sel).</li>
+                            <li><strong>Vakuola:</strong> Tempat penyimpanan air dan makanan.</li>
+                            <li><strong>Kloroplas:</strong> Hanya pada tumbuhan, tempat fotosintesis.</li>
+                            <li><strong>Dinding Sel:</strong> Hanya pada tumbuhan, memberi bentuk kaku dan perlindungan ekstra.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-lightbulb text-amber-500 text-xl mt-0.5"></i>
                         <div>
-                            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Materi Utama</span>
-                            <h2 class="text-xl font-bold mt-2">Pengenalan Sel</h2>
-                            <p class="text-xs text-slate-500 mt-0.5">Unit Terkecil Kehidupan</p>
-                        </div>
-                        <hr class="border-slate-100"/>
-                        <div class="space-y-4 text-sm leading-relaxed text-slate-600">
-                            <h3 class="font-bold text-slate-900 flex items-center"><span class="bg-emerald-100 text-emerald-700 w-5 h-5 inline-flex items-center justify-center rounded-full text-xs mr-2">1</span> Apa itu Sel?</h3>
-                            <p>Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh Robert Hooke pada tahun 1665 saat mengamati sayatan gabus pohon ek di bawah mikroskop sederhana.</p>
-                            
-                            <h3 class="font-bold text-slate-900 flex items-center pt-2"><span class="bg-emerald-100 text-emerald-700 w-5 h-5 inline-flex items-center justify-center rounded-full text-xs mr-2">2</span> Spesialisasi Sel (Uniseluler vs Multiseluler)</h3>
-                            <ul class="list-disc list-inside space-y-1 pl-2">
-                                <li><strong class="text-slate-800">Uniseluler:</strong> Organisme yang hanya terdiri dari satu sel tunggal (Contoh: Bakteri, Amoeba, Paramecium).</li>
-                                <li><strong class="text-slate-800">Multiseluler:</strong> Organisme yang terdiri dari banyak sel yang bekerja sama (Contoh: Manusia, Hewan, Tumbuhan).</li>
-                            </ul>
+                            <h5 class="font-bold text-amber-900 text-sm">Tahukah Kamu?</h5>
+                            <p class="text-amber-800 text-xs mt-1 leading-relaxed">Ukuran rata-rata sel makhluk hidup berkisar antara 10 hingga 100 mikrometer (10 $\mu$m - 100 $\mu$m). Sebagai gambaran, selembar kertas tebalnya sekitar 100.000 mikrometer! Jadi, sel sangatlah kecil dan mutlak membutuhkan mikroskop untuk diamati.</p>
                         </div>
                     </div>
-                </template>
+                </div>
 
-                <template x-if="subMateri === 'alat-mikroskop'">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                        <div>
-                            <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Alat & Prosedur</span>
-                            <h2 class="text-xl font-bold mt-2">Mikroskop</h2>
-                            <p class="text-xs text-slate-500 mt-0.5">Melihat Dunia Mikro</p>
-                        </div>
-                        <hr class="border-slate-100"/>
-                        <div class="space-y-4 text-sm text-slate-600">
-                            <h3 class="font-bold text-slate-900">Bagian-Bagian Mikroskop</h3>
-                            <p>Secara umum, mikroskop memiliki dua bagian utama:</p>
-                            <div class="space-y-2 pl-2">
-                                <div><strong class="text-slate-800">• Bagian Optik:</strong> Lensa Okuler, Lensa Objektif, Kondensor, Diafragma, dan Cermin.</div>
-                                <div><strong class="text-slate-800">• Bagian Mekanik:</strong> Makrometer, Mikrometer, Revolver, Meja Preparat, dan Penjepit Objek.</div>
+                <div id="sub-tab-alat-mikroskop" class="sub-tab-content space-y-6">
+                    <div class="border-l-4 border-emerald-600 pl-4">
+                        <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Alat & Prosedur</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-1">Mikroskop</h3>
+                        <p class="text-gray-500 italic text-sm">Melihat Dunia Mikro</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-sm text-emerald-800 uppercase tracking-wide mb-2">1. Mengenal Mikroskop</h4>
+                                <p class="text-gray-700 text-sm leading-relaxed">Mikroskop adalah alat bantu utama untuk mengamati objek-objek berukuran sangat kecil (mikroskopis). Penemu mikroskop pertama kali yang diakui secara luas adalah <strong>Zacharias Janssen</strong> pada tahun 1590, diikuti oleh penyempurnaan oleh Antony van Leeuwenhoek.</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl">
+                                <h4 class="font-bold text-sm text-emerald-800 uppercase tracking-wide mb-2">2. Bagian-Bagian Mikroskop</h4>
+                                <p class="text-xs text-gray-500 mb-2">Secara umum, mikroskop memiliki dua bagian utama:</p>
+                                <ul class="text-xs text-gray-700 space-y-2 pl-4 list-disc">
+                                    <li><strong>Bagian Optik (Berhubungan dengan cahaya & lensa):</strong> Lensa Okuler (dekat mata), Lensa Objektif (dekat benda), Kondensor, Diafragma, dan Cermin/Lampu.</li>
+                                    <li><strong>Bagian Mekanis (Berhubungan dengan penyangga & gerakan):</strong> Makrometer (pemutar kasar), Mikrometer (pemutar halus), Revolver (pemilih lensa objektif), Meja Preparat, Jepit Objek, dan Kaki Mikroskop.</li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                </template>
 
-                <template x-if="subMateri === 'perbandingan-sel'">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col justify-center items-center">
+                            <h4 class="font-bold text-sm text-gray-700 mb-4">Skema Sederhana Bagian Mikroskop</h4>
+                            <div class="w-full max-w-[280px] bg-white p-4 rounded-xl shadow-inner relative flex flex-col items-center border border-gray-100">
+                                <svg class="w-32 h-44 text-emerald-700" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="50" y1="15" x2="50" y2="40" stroke-width="4"/>
+                                    <circle cx="50" cy="15" r="6" fill="currentColor"/>
+                                    <circle cx="50" cy="40" r="10" stroke-width="3"/>
+                                    <path d="M50,40 C20,40 20,80 50,80" stroke-width="3"/>
+                                    <line x1="40" y1="65" x2="65" y2="65" stroke-width="3"/>
+                                    <circle cx="50" cy="75" r="5" fill="gray"/>
+                                    <rect x="35" y="85" width="30" height="8" rx="2" fill="currentColor"/>
+                                </svg>
+                                <div class="absolute text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded shadow top-2 right-2">Lensa Okuler</div>
+                                <div class="absolute text-[10px] bg-amber-600 text-white px-1.5 py-0.5 rounded shadow top-12 left-2">Lengan</div>
+                                <div class="absolute text-[10px] bg-blue-600 text-white px-1.5 py-0.5 rounded shadow top-12 right-2">Revolver</div>
+                                <div class="absolute text-[10px] bg-purple-600 text-white px-1.5 py-0.5 rounded shadow top-20 right-2">Lensa Objektif</div>
+                                <div class="absolute text-[10px] bg-pink-600 text-white px-1.5 py-0.5 rounded shadow top-24 left-2">Meja Sediaan</div>
+                                <div class="absolute text-[10px] bg-slate-600 text-white px-1.5 py-0.5 rounded shadow bottom-6 right-6">Cermin</div>
+                                <div class="absolute text-[10px] bg-gray-700 text-white px-1.5 py-0.5 rounded shadow bottom-1">Kaki Mikroskop</div>
+                            </div>
+                            <p class="text-[11px] text-gray-500 italic mt-3">Amati setiap komponen dengan seksama!</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl">
+                        <span class="inline-block bg-cyan-100 text-cyan-800 text-xs font-bold px-2 py-1 rounded mb-2">Prosedur</span>
+                        <h4 class="font-bold text-lg mb-2">3. Langkah Menggunakan Mikroskop</h4>
+                        <ol class="list-decimal pl-5 text-sm text-gray-700 space-y-1.5">
+                            <li>Letakkan mikroskop di meja yang rata dengan memegang lengan dan menyangga kaki mikroskop.</li>
+                            <li>Putar revolver untuk memilih lensa objektif perbesaran terendah.</li>
+                            <li>Atur cermin dan diafragma agar cahaya masuk secara maksimal (lapang pandang terang).</li>
+                            <li>Letakkan preparat di meja, jepit agar stabil.</li>
+                            <li>Putar makrometer untuk mendekatkan lensa objektif ke preparat sambil melihat dari samping.</li>
+                            <li>Intip melalui lensa okuler, lalu putar makrometer ke atas secara perlahan hingga objek terlihat.</li>
+                            <li>Putar mikrometer untuk memfokuskan objek agar gambar terlihat tajam.</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+                        <h5 class="text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Rumus Perbesaran Mikroskop:
+                        </h5>
+                        <div class="bg-white py-3 px-4 rounded-lg shadow-inner text-center font-mono text-sm text-blue-900 font-bold my-2 border border-blue-100">
+                            $$\text{Perbesaran Total} = \text{Perbesaran Lensa Okuler} \times \text{Perbesaran Lensa Objektif}$$
+                        </div>
+                        <p class="text-xs text-blue-800 leading-relaxed mt-2"><strong>Contoh:</strong> Jika lensa okuler memakai perbesaran $10\times$ dan lensa objektif memakai perbesaran $40\times$, maka objek diperbesar sebanyak $400\times$ lipat dari ukuran aslinya.</p>
+                    </div>
+
+                    <div class="bg-red-50 border border-red-200 p-4 rounded-xl">
+                        <h5 class="text-sm font-bold text-red-900 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-red-500"></i> Aturan Penting Keselamatan Kerja!
+                        </h5>
+                        <ul class="text-xs text-red-800 space-y-1.5 pl-4 list-disc">
+                            <li>Bawa mikroskop selalu dengan dua tangan (satu memegang lengan, satu menyangga kaki).</li>
+                            <li>Bersihkan lensa hanya dengan tissue lensa khusus, jangan pernah pakai baju/kertas kasar agar lensa tidak tergores.</li>
+                            <li>Saat menurunkan makrometer secara cepat, selalu perhatikan dari samping, jangan sampai lensa objektif menabrak kaca sediaan (bisa pecah!).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="sub-tab-perbandingan-sel" class="sub-tab-content space-y-6">
+                    <div class="border-l-4 border-emerald-600 pl-4">
+                        <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Perbandingan Struktur</span>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-1">Sel Hewan vs Sel Tumbuhan</h3>
+                        <p class="text-gray-500 italic text-sm">Analisis Perbedaan Karakteristik</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-red-50 p-4 rounded-xl border border-red-100 flex flex-col items-center text-center">
+                            <div class="w-16 h-16 rounded-full bg-red-200 border-2 border-red-400 flex items-center justify-center mb-2 relative">
+                                <div class="w-5 h-5 rounded-full bg-purple-400 border border-purple-600"></div>
+                                <div class="w-2 h-2 rounded-full bg-blue-400 absolute top-3 right-4"></div>
+                            </div>
+                            <span class="font-bold text-sm text-red-900">Sel Hewan</span>
+                            <p class="text-[11px] text-red-700 mt-1">Bentuk tidak tetap, fleksibel, tidak memiliki dinding sel, vakuola kecil/tidak ada.</p>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 flex flex-col items-center text-center">
+                            <div class="w-16 h-14 rounded-lg bg-emerald-200 border-2 border-emerald-500 flex items-center justify-center mb-2 relative">
+                                <div class="w-6 h-6 bg-emerald-100 border border-emerald-400 rounded-sm flex items-center justify-center">
+                                    <div class="w-3 h-3 rounded-full bg-purple-400"></div>
+                                </div>
+                                <div class="w-2 h-2 bg-green-500 rounded-full absolute top-2 right-2"></div>
+                                <div class="w-2 h-2 bg-green-500 rounded-full absolute bottom-2 left-2"></div>
+                            </div>
+                            <span class="font-bold text-sm text-emerald-900">Sel Tumbuhan</span>
+                            <span class="text-[10px] bg-emerald-600 text-white px-1.5 rounded-full mt-0.5">Ada Kloroplas</span>
+                            <p class="text-[11px] text-emerald-700 mt-1">Bentuk kaku/tetap, memiliki dinding sel dari selulosa, vakuola besar (sentral).</p>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700 font-bold">
+                                    <th class="p-3 border border-gray-200">Pembeda / Organel</th>
+                                    <th class="p-3 border border-gray-200 text-red-700">Sel Hewan</th>
+                                    <th class="p-3 border border-gray-200 text-emerald-700">Sel Tumbuhan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border border-gray-200 font-medium">Dinding Sel</td>
+                                    <td class="p-3 border border-gray-200 text-red-500 font-semibold"><i class="fa-solid fa-xmark"></i> Tidak Ada</td>
+                                    <td class="p-3 border border-gray-200 text-emerald-600 font-semibold"><i class="fa-solid fa-check"></i> Ada (kaku & kuat)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border border-gray-200 font-medium">Kloroplas (Klorofil)</td>
+                                    <td class="p-3 border border-gray-200 text-red-500 font-semibold"><i class="fa-solid fa-xmark"></i> Tidak Ada</td>
+                                    <td class="p-3 border border-gray-200 text-emerald-600 font-semibold"><i class="fa-solid fa-check"></i> Ada (proses fotosintesis)</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border border-gray-200 font-medium">Ukuran Vakuola</td>
+                                    <td class="p-3 border border-gray-200">Kecil atau tidak ada sama sekali</td>
+                                    <td class="p-3 border border-gray-200">Sangat Besar (Sentral) mendominasi sel</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border border-gray-200 font-medium">Bentuk Sel</td>
+                                    <td class="p-3 border border-gray-200">Berubah-ubah / Fleksibel</td>
+                                    <td class="p-3 border border-gray-200">Tetap / Kaku</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="p-3 border border-gray-200 font-medium">Sentriol (Pembelahan Sel)</td>
+                                    <td class="p-3 border border-gray-200 text-emerald-600 font-semibold"><i class="fa-solid fa-check"></i> Ada</td>
+                                    <td class="p-3 border border-gray-200 text-red-500 font-semibold"><i class="fa-solid fa-xmark"></i> Tidak Ada (pada umumnya)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-emerald-700 text-white p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div>
-                            <span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Perbandingan Struktur</span>
-                            <h2 class="text-xl font-bold mt-2">Sel Hewan vs Sel Tumbuhan</h2>
+                            <h4 class="font-bold text-lg">Siap uji pemahaman?</h4>
+                            <p class="text-xs text-emerald-100">Jika kamu sudah membaca materi pengenalan sel ini dengan baik, cobalah tantang dirimu kuis!</p>
                         </div>
-                        <hr class="border-slate-100"/>
-                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold">
-                                        <th class="p-3">Pembeda</th>
-                                        <th class="p-3 text-red-600">Sel Hewan</th>
-                                        <th class="p-3 text-emerald-600">Sel Tumbuhan</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100 text-slate-600">
-                                    <tr>
-                                        <td class="p-3 font-semibold text-slate-900">Dinding Sel</td>
-                                        <td class="p-3 text-red-500">Tidak Ada</td>
-                                        <td class="p-3 text-emerald-600">Ada (Kaku)</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="p-3 font-semibold text-slate-900">Kloroplas</td>
-                                        <td class="p-3 text-red-500">Tidak Ada</td>
-                                        <td class="p-3 text-emerald-600">Ada</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <button onclick="switchTab('kuis')" class="bg-white text-emerald-700 hover:bg-emerald-50 px-5 py-2.5 rounded-xl font-bold text-sm transition shadow-md whitespace-nowrap">Mulai Kuis Sekarang</button>
                     </div>
-                </template>
+                </div>
             </div>
-        </template>
+        </section>
 
-        <template x-if="activeTab === 'kisikisi'">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                <h2 class="text-xl font-bold">Kisi-Kisi Soal Penilaian Harian</h2>
-                <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                    <table class="w-full text-left border-collapse text-xs custom-scrollbar">
+        <section id="tab-kisi-kisi" class="tab-content">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b border-gray-100 pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-600 tracking-wider uppercase">Pemetaan Kompetensi</span>
+                        <h2 class="text-2xl font-bold text-gray-900 mt-1">Kisi-Kisi Soal Penilaian Harian / Ujian</h2>
+                    </div>
+                    <div class="bg-emerald-50 text-emerald-800 text-xs px-3 py-1.5 rounded-lg border border-emerald-100">
+                        <strong>Kurikulum:</strong> Merdeka <br><strong>Bab 1:</strong> Sel & Mikroskop
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse border border-gray-200 rounded-xl overflow-hidden">
                         <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold">
-                                <th class="p-3 w-12 text-center">No.</th>
-                                <th class="p-3">Materi</th>
-                                <th class="p-3">Indikator Soal</th>
-                                <th class="p-3 text-center">Level</th>
-                                <th class="p-3">Bentuk Soal</th>
+                            <tr class="bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider">
+                                <th class="p-3 border border-emerald-800 text-center w-12">No.</th>
+                                <th class="p-3 border border-emerald-800">Materi / Topik Utama</th>
+                                <th class="p-3 border border-emerald-800">Indikator Pencapaian Soal (Siswa Dapat...)</th>
+                                <th class="p-3 border border-emerald-800 text-center w-28">Level Kognitif</th>
+                                <th class="p-3 border border-emerald-800">Bentuk Soal</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 text-slate-600">
-                            <tr><td class="p-3 text-center font-bold">1</td><td class="p-3 font-semibold">Pengenalan Sel</td><td class="p-3">Siswa dapat menjelaskan pengertian sel dan mengidentifikasi penemu sel pertama kali.</td><td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">C1</span></td><td class="p-3">Pilihan Ganda & Menjodohkan</td></tr>
-                            <tr><td class="p-3 text-center font-bold">2</td><td class="p-3 font-semibold">Uniseluler & Multiseluler</td><td class="p-3">Siswa dapat membedakan ciri-ciri organisme uniseluler dan multiseluler beserta contohnya.</td><td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">C2</span></td><td class="p-3">Pilihan Ganda Kompleks</td></tr>
-                            <tr><td class="p-3 text-center font-bold">3</td><td class="p-3 font-semibold">Organel Sel</td><td class="p-3">Siswa dapat mencocokkan nama organel sel dengan fungsi spesifiknya di dalam sel.</td><td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">C3</span></td><td class="p-3">Menjodohkan & Benar/Salah</td></tr>
-                            <tr><td class="p-3 text-center font-bold">4</td><td class="p-3 font-semibold">Perbedaan Sel</td><td class="p-3">Siswa dapat menganalisis perbedaan struktur sel tumbuhan dan sel hewan.</td><td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">C4</span></td><td class="p-3">Pilihan Ganda Kompleks</td></tr>
-                            <tr><td class="p-3 text-center font-bold">5</td><td class="p-3 font-semibold">Bagian Mikroskop</td><td class="p-3">Siswa dapat mengidentifikasi bagian optik dan mekanik pada mikroskop.</td><td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">C2</span></td><td class="p-3">Menjodohkan</td></tr>
-                            <tr><td class="p-3 text-center font-bold">6</td><td class="p-3 font-semibold">Langkah Kerja Mikroskop</td><td class="p-3">Siswa dapat mengurutkan langkah-langkah penggunaan mikroskop secara aman.</td><td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">C3</span></td><td class="p-3">Benar/Salah & Pilihan Ganda</td></tr>
+                        <tbody class="text-gray-600">
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 border border-gray-200 text-center font-bold">1</td>
+                                <td class="p-3 border border-gray-200 font-semibold text-gray-900">Pengenalan Sel</td>
+                                <td class="p-3 border border-gray-200">Siswa dapat menjelaskan pengertian sel dan mengidentifikasi penemu sel pertama kali.</td>
+                                <td class="p-3 border border-gray-200 text-center"><span class="bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded text-xs">C1 (Mengingat)</span></td>
+                                <td class="p-3 border border-gray-200 text-xs">Pilihan Ganda & Menjodohkan</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 border border-gray-200 text-center font-bold">2</td>
+                                <td class="p-3 border border-gray-200 font-semibold text-gray-900">Uniseluler & Multiseluler</td>
+                                <td class="p-3 border border-gray-200">Siswa dapat membedakan ciri-ciri organisme uniseluler dan multiseluler beserta contohnya.</td>
+                                <td class="p-3 border border-gray-200 text-center"><span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-xs">C2 (Memahami)</span></td>
+                                <td class="p-3 border border-gray-200 text-xs">Pilihan Ganda & Pilihan Ganda Kompleks</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 border border-gray-200 text-center font-bold">3</td>
+                                <td class="p-3 border border-gray-200 font-semibold text-gray-900">Organel Sel</td>
+                                <td class="p-3 border border-gray-200">Siswa dapat mencocokkan nama organel sel dengan fungsi spesifiknya di dalam sel.</td>
+                                <td class="p-3 border border-gray-200 text-center"><span class="bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded text-xs">C3 (Menerapkan)</span></td>
+                                <td class="p-3 border border-gray-200 text-xs">Menjodohkan & Benar/Salah</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 border border-gray-200 text-center font-bold">4</td>
+                                <td class="p-3 border border-gray-200 font-semibold text-gray-900">Perbedaan Sel</td>
+                                <td class="p-3 border border-gray-200">Siswa dapat menganalisis perbedaan struktur sel tumbuhan dan sel hewan berdasarkan keberadaan organel tertentu.</td>
+                                <td class="p-3 border border-gray-200 text-center"><span class="bg-red-100 text-red-800 font-bold px-2 py-0.5 rounded text-xs">C4 (Menganalisis)</span></td>
+                                <td class="p-3 border border-gray-200 text-xs">Benar/Salah & Pilihan Ganda Kompleks</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 border border-gray-200 text-center font-bold">5</td>
+                                <td class="p-3 border border-gray-200 font-semibold text-gray-900">Bagian Mikroskop</td>
+                                <td class="p-3 border border-gray-200">Siswa dapat mengidentifikasi bagian optik dan mekanik pada mikroskop beserta fungsinya.</td>
+                                <td class="p-3 border border-gray-200 text-center"><span class="bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded text-xs">C2 (Memahami)</span></td>
+                                <td class="p-3 border border-gray-200 text-xs">Menjodohkan</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="p-3 border border-gray-200 text-center font-bold">6</td>
+                                <td class="p-3 border border-gray-200 font-semibold text-gray-900">Langkah Kerja Mikroskop</td>
+                                <td class="p-3 border border-gray-200">Siswa dapat mengurutkan langkah-langkah penggunaan mikroskop secara merunut, tepat dan aman.</td>
+                                <td class="p-3 border border-gray-200 text-center"><span class="bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded text-xs">C3 (Menerapkan)</span></td>
+                                <td class="p-3 border border-gray-200 text-xs">Benar/Salah & Pilihan Ganda</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </template>
 
-        <template x-if="activeTab === 'kuis'">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <template x-if="!quizStarted">
-                    <div class="text-center py-8 space-y-4 max-w-md mx-auto">
-                        <h2 class="text-xl font-bold text-slate-900">Kuis Evaluasi Bab 1</h2>
-                        <p class="text-xs text-slate-500">15 Soal latihan multi-variasi (Pilihan Ganda, Benar/Salah, Menjodohkan, Kompleks).</p>
-                        <button @click="startQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all">Mulai Kuis</button>
-                    </div>
-                </template>
-
-                <template x-if="quizStarted">
-                    <div class="space-y-6">
-                        <div class="flex items-center justify-between text-xs pb-3 border-b border-slate-100">
-                            <h3 class="font-bold text-sm">Soal <span x-text="currentQuestionIndex + 1"></span> dari <span x-text="questions.length"></span></h3>
-                            <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full font-bold uppercase" x-text="questions[currentQuestionIndex].type"></span>
-                        </div>
-
-                        <div class="space-y-2">
-                            <h4 class="text-sm font-semibold text-slate-800" x-text="questions[currentQuestionIndex].question"></h4>
-                        </div>
-
-                        <div class="pt-2">
-                            <template x-if="questions[currentQuestionIndex].type === 'pilihan-ganda' || questions[currentQuestionIndex].type === 'benar-salah'">
-                                <div class="grid grid-cols-1 gap-2">
-                                    <template x-for="option in questions[currentQuestionIndex].options" :key="option">
-                                        <button @click="if(!quizSubmitted) answers[questions[currentQuestionIndex].id] = option"
-                                                :class="answers[questions[currentQuestionIndex].id] === option ? 'bg-emerald-50 border-emerald-500 text-emerald-900 font-semibold' : 'bg-white border-slate-200'"
-                                                class="w-full text-left p-3.5 rounded-xl border text-xs transition-all hover:bg-slate-50"
-                                                x-text="option">
-                                        </button>
-                                    </template>
-                                </div>
-                            </template>
-
-                            <template x-if="questions[currentQuestionIndex].type === 'multi-select'">
-                                <div class="grid grid-cols-1 gap-2">
-                                    <template x-for="option in questions[currentQuestionIndex].options" :key="option">
-                                        <button @click="toggleMultiSelect(questions[currentQuestionIndex].id, option)"
-                                                :class="answers[questions[currentQuestionIndex].id].includes(option) ? 'bg-emerald-50 border-emerald-500 font-semibold' : 'bg-white border-slate-200'"
-                                                class="w-full text-left p-3.5 rounded-xl border text-xs transition-all flex items-center">
-                                            <input type="checkbox" :checked="answers[questions[currentQuestionIndex].id].includes(option)" class="mr-3 pointer-events-none">
-                                            <span x-text="option"></span>
-                                        </button>
-                                    </template>
-                                </div>
-                            </template>
-
-                            <template x-if="questions[currentQuestionIndex].type === 'matching'">
-                                <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                    <template x-for="pair in questions[currentQuestionIndex].pairs" :key="pair.key">
-                                        <div class="bg-white p-3 rounded-lg border flex flex-col space-y-1">
-                                            <label class="text-xs font-bold text-slate-700" x-text="pair.key"></label>
-                                            <select x-model="answers[questions[currentQuestionIndex].id][pair.key]" :disabled="quizSubmitted" class="w-full text-xs p-2 rounded border bg-slate-50">
-                                                <option value="">-- Jodohkan Jawaban Di Sini --</option>
-                                                <template x-for="opt in pair.options" :key="opt">
-                                                    <option :value="opt" x-text="opt"></option>
-                                                </template>
-                                            </select>
-                                        </div>
-                                    </template>
-                                </div>
-                            </template>
-                        </div>
-
-                        <template x-if="quizSubmitted">
-                            <div class="bg-slate-900 text-white p-4 rounded-xl text-center text-xs">
-                                <span class="text-slate-400">Nilai Akumulasi Anda:</span> <strong class="text-emerald-400 text-lg ml-1" x-text="score + ' / 100'"></strong>
-                            </div>
-                        </template>
-
-                        <div class="flex items-center justify-between pt-4 border-t text-xs">
-                            <button @click="currentQuestionIndex = Math.max(0, currentQuestionIndex - 1)" :disabled="currentQuestionIndex === 0" class="px-4 py-2 border rounded-lg disabled:opacity-40">Sebelumnya</button>
-                            
-                            <template x-if="currentQuestionIndex < questions.length - 1">
-                                <button @click="currentQuestionIndex++" class="px-4 py-2 bg-emerald-600 text-white rounded-lg">Berikutnya</button>
-                            </template>
-                            
-                            <template x-if="currentQuestionIndex === questions.length - 1 && !quizSubmitted">
-                                <button @click="submitQuiz()" class="px-5 py-2 bg-blue-600 text-white rounded-lg font-bold shadow">Kirim Jawaban</button>
-                            </template>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </template>
-
-        <template x-if="activeTab === 'tanyaai'">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[450px]">
-                <h2 class="text-xl font-bold">Tanya Guru IPA AI</h2>
-                <hr class="my-3"/>
-                <div class="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar text-xs">
-                    <template x-for="msg in messages" :key="msg.id">
-                        <div :class="msg.sender === 'user' ? 'justify-end' : 'justify-start'" class="flex">
-                            <div :class="msg.sender === 'user' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-800 border'" class="max-w-lg p-3 rounded-xl shadow-xs">
-                                <p x-text="msg.text"></p>
-                            </div>
-                        </div>
-                    </template>
+                <div class="mt-6 bg-gray-50 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <p class="text-xs text-gray-500">Sudah Menguasai Semua Indikator? Uji kesiapan mental dan akademismu sekarang lewat kuis simulasi interaktif berformat lengkap.</p>
+                    <button onclick="switchTab('kuis')" class="bg-emerald-700 text-white hover:bg-emerald-800 px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap shadow-sm">Mulai Kuis Simulasi</button>
                 </div>
-                <form @submit.prevent="sendChat()" class="mt-3 flex items-center space-x-2 pt-2 border-t">
-                    <input type="text" x-model="inputChat" placeholder="Tanyakan materi sel di sini (contoh: apa beda sel hewan dan tumbuhan?)..." class="flex-1 text-xs p-3 rounded-xl border bg-slate-50 focus:outline-none focus:bg-white focus:border-emerald-500"/>
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-5 py-3 rounded-xl transition-colors">Kirim</button>
+            </div>
+        </section>
+
+        <section id="tab-kuis" class="tab-content">
+            <div id="quiz-start-screen" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-2xl mx-auto text-center space-y-6">
+                <div class="w-16 h-16 bg-emerald-50 text-emerald-700 rounded-full flex items-center justify-center text-3xl mx-auto border border-emerald-100">
+                    <i class="fa-solid fa-file-pen"></i>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Kuis Evaluasi Bab 1 (Super Lengkap)</h2>
+                    <p class="text-sm text-gray-500 mt-2">Uji kesiapan belajarmu dengan variasi soal Pilihan Ganda, Benar/Salah, Menjodohkan, dan Pilihan Lebih dari 1.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 border-y border-gray-100 py-4 text-left max-w-md mx-auto text-sm">
+                    <div class="text-gray-500">Total Soal:</div>
+                    <div class="font-bold text-gray-900 text-right">15 Butir Soal</div>
+                    <div class="text-gray-500">Format Soal:</div>
+                    <div class="font-bold text-gray-900 text-right">4 Tipe Variatif Interaktif</div>
+                    <div class="text-gray-500">Kriteria Kelulusan (KKM):</div>
+                    <div class="font-bold text-emerald-700 text-right">75 / 100</div>
+                </div>
+
+                <button onclick="startQuiz()" class="w-full max-w-md bg-emerald-700 text-white hover:bg-emerald-800 font-bold py-3 px-6 rounded-xl transition shadow-md">Mulai Kuis</button>
+            </div>
+
+            <div id="quiz-workspace" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-3xl mx-auto hidden space-y-6">
+                <div class="flex justify-between items-center border-b border-gray-100 pb-3">
+                    <div>
+                        <span id="question-type-badge" class="bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">Pilihan Ganda</span>
+                        <h4 class="text-lg font-bold text-gray-900 mt-1" id="question-number">Soal 1 dari 15</h4>
+                    </div>
+                    <div class="w-24 bg-gray-200 rounded-full h-2">
+                        <div id="quiz-progress-bar" class="bg-emerald-600 h-2 rounded-full" style="width: 6.66%"></div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <p class="text-gray-800 font-medium text-base leading-relaxed" id="question-text">Memuat pertanyaan...</p>
+                </div>
+
+                <div id="hint-box" class="bg-amber-50 text-amber-800 text-xs p-3 rounded-lg flex items-start gap-2 border border-amber-100">
+                    <i class="fa-solid fa-circle-info mt-0.5"></i>
+                    <span id="hint-text">Pilihlah satu jawaban yang paling tepat. Langsung klik atau ketuk pada area salah satu pilihan (A, B, C, atau D) di bawah ini.</span>
+                </div>
+
+                <div id="options-container" class="space-y-3">
+                    </div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+                    <button onclick="prevQuestion()" id="btn-prev" class="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition disabled:opacity-40 disabled:pointer-events-none">Sebelumnya</button>
+                    <span class="text-xs font-bold text-gray-400" id="quiz-status-indicator">Belum Diisi</span>
+                    <button onclick="nextQuestion()" id="btn-next" class="px-5 py-2 bg-emerald-700 text-white hover:bg-emerald-800 rounded-lg text-sm font-bold transition">Berikutnya</button>
+                </div>
+            </div>
+
+            <div id="quiz-result-screen" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-xl mx-auto text-center hidden space-y-6">
+                <div id="result-icon-box" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto">
+                    </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900" id="result-title">Hasil Penilaian Kuis</h2>
+                    <p class="text-sm text-gray-500 mt-1" id="result-status-text">Selamat, kamu dinyatakan lulus!</p>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 max-w-sm mx-auto grid grid-cols-2 gap-4 text-sm text-left">
+                    <div class="text-gray-500 font-medium">Skor Akhir Kamu:</div>
+                    <div class="text-right font-black text-2xl text-emerald-700" id="result-score">85 / 100</div>
+                    <div class="text-gray-500 font-medium">Benar / Salah:</div>
+                    <div class="text-right font-bold text-gray-900" id="result-ratio">12 Benar / 3 Salah</div>
+                </div>
+
+                <div class="flex gap-3 max-w-sm mx-auto">
+                    <button onclick="resetQuiz()" class="flex-1 py-2.5 border border-gray-300 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition">Ulangi Kuis</button>
+                    <button onclick="switchTab('materi')" class="flex-1 py-2.5 bg-emerald-700 text-white hover:bg-emerald-800 rounded-xl text-sm font-bold transition shadow">Kembali ke Materi</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-guru-ai" class="tab-content">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-3xl mx-auto flex flex-col h-[500px]">
+                <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-4">
+                    <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-base">Ibu Guru IPA Cerdas</h3>
+                        <p class="text-xs text-emerald-600 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span> Aktif menjawab materi Bab 1</p>
+                    </div>
+                </div>
+
+                <div id="chat-box-container" class="flex-1 overflow-y-auto space-y-4 px-2 py-1 text-sm">
+                    <div class="flex gap-3 max-w-[85%]">
+                        <div class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs shrink-0 font-bold">AI</div>
+                        <div class="bg-gray-100 text-gray-800 p-3 rounded-2xl rounded-tl-none leading-relaxed">
+                            Halo! Saya adalah Asisten Guru IPA AI. Silakan tanyakan apa saja tentang materi Bab 1 Kelas 8: Pengenalan Sel dan Mikroskop! Contoh: <em>"Apa bedanya sel hewan dan tumbuhan?"</em> atau <em>"Bagaimana cara merawat lensa mikroskop?"</em>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="chat-form-submit" onsubmit="handleSendChat(event)" class="mt-4 pt-3 border-t border-gray-100 flex gap-2">
+                    <input type="text" id="chat-input-field" placeholder="Ketik pertanyaanmu di sini... (contoh: Apa fungsi klorofil?)" class="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:border-emerald-600" required>
+                    <button type="submit" class="bg-emerald-700 text-white hover:bg-emerald-800 px-5 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2"><i class="fa-solid fa-paper-plane"></i> Kirim</button>
                 </form>
             </div>
-        </template>
-    </div>
+        </section>
 
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 text-xs text-center py-6 mt-12 border-t border-gray-800">
+        <p class="font-bold text-gray-300">EduSel IPA Kelas 8 SMP Bab 1 - Pengenalan Sel dan Mikroskop</p>
+        <p class="mt-1">© 2026 Aplikasi Pembelajaran Mandiri Interaktif. Selamat Belajar!</p>
+    </footer>
+
+    <script>
+        // --- 1. GLOBAL NAVIGATION TABS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'shadow');
+                btn.classList.add('hover:bg-emerald-600', 'text-gray-100');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.remove('hover:bg-emerald-600');
+            activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow');
+        }
+
+        // --- 2. NESTED SUB-TAB MATERI NAVIGATION ---
+        function switchSubTab(subTabId) {
+            document.querySelectorAll('.sub-tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`sub-tab-${subTabId}`).classList.add('active');
+
+            document.querySelectorAll('.sub-nav-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-600', 'bg-emerald-50', 'text-emerald-700');
+                btn.classList.add('border-gray-200', 'bg-white', 'text-gray-600');
+            });
+            const activeSubBtn = document.getElementById(`sub-nav-${subTabId}`);
+            activeSubBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-600');
+            activeSubBtn.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-700');
+        }
+
+        // --- 3. DATABASE SOAL KUIS (15 SOAL VARIATIF LENGKAP) ---
+        const quizDatabase = [
+            { type: 'PG', q: 'Siapakah ilmuwan yang pertama kali menemukan istilah "sel" pada tahun 1665 saat mengamati sayatan gabus pohon ek?', hint: 'Pilihlah satu jawaban yang paling tepat.', opts: ['Antony van Leeuwenhoek', 'Robert Hooke', 'Rudolf Virchow', 'Theodor Schwann'], a: 1 },
+            { type: 'PG', q: 'Manakah di bawah ini yang merupakan contoh organisme uniseluler?', hint: 'Pilihlah satu jawaban yang paling tepat.', opts: ['Amoeba dan Bakteri', 'Jamur Kuping dan Lumut', 'Cacing Tanah dan Paramecium', 'Semut dan Ganggang Hijau'], a: 0 },
+            { type: 'PG', q: 'Organel sel yang berfungsi sebagai pusat kendali seluruh aktivitas sel dan menyimpan materi genetik (DNA) adalah...', hint: 'Pilihlah satu jawaban yang paling tepat.', opts: ['Mitokondria', 'Sitoplasma', 'Nukleus', 'Kloroplas'], a: 2 },
+            { type: 'BS', q: 'Pernyataan: Sel hewan memiliki dinding sel yang kaku untuk memberikan perlindungan mekanis dan menjaga bentuk sel tetap stabil.', hint: 'Tentukan Benar atau Salah pernyataan di atas.', opts: ['Benar', 'Salah'], a: 1 },
+            { type: 'BS', q: 'Pernyataan: Lensa objektif pada mikroskop adalah lensa yang posisinya berada paling dekat dengan mata pengamat saat praktikum.', hint: 'Tentukan Benar atau Salah pernyataan di atas.', opts: ['Benar', 'Salah'], a: 1 },
+            { type: 'BS', q: 'Pernyataan: Sebelum mengamati objek dengan perbesaran tinggi, kita harus mengatur dan memfokuskan bayangan menggunakan lensa objektif perbesaran terendah terlebih dahulu.', hint: 'Tentukan Benar atau Salah pernyataan di atas.', opts: ['Benar', 'Salah'], a: 0 },
+            { type: 'BS', q: 'Pernyataan: Mitokondria adalah tempat berlangsungnya respirasi sel untuk menghasilkan energi utama bagi kelangsungan hidup sel.', hint: 'Tentukan Benar atau Salah pernyataan di atas.', opts: ['Benar', 'Salah'], a: 0 },
+            { type: 'MA', q: 'Manakah dari organel berikut yang HANYA dapat ditemukan di dalam sel tumbuhan? (Pilih semua jawaban yang benar)', hint: 'Centang semua kotak opsi yang kamu anggap benar.', opts: ['Nukleus', 'Dinding Sel', 'Lisosom', 'Kloroplas'], a: [1, 3] },
+            { type: 'MA', q: 'Pilihlah bagian-bagian mikroskop yang tergolong ke dalam Bagian Optik (berkaitan langsung dengan jalannya cahaya):', hint: 'Centang semua kotak opsi yang kamu anggap benar.', opts: ['Lensa Okuler', 'Makrometer', 'Cermin / Lampu Sumber Cahaya', 'Revolver'], a: [0, 2] },
+            { type: 'MA', q: 'Manakah di bawah ini yang tergolong sebagai organisme multiseluler?', hint: 'Centang semua kotak opsi yang kamu anggap benar.', opts: ['Manusia', 'Bakteri E. coli', 'Pohon Mangga', 'Amoeba'], a: [0, 2] },
+            { type: 'JD', q: 'Jodohkanlah organel-organel sel berikut dengan fungsinya secara tepat!', sub: 'Membran Sel', hint: 'Pilih opsi drop-down pencocokan yang sesuai.', opts: ['Mengatur keluar masuknya zat dan melindungi isi sel', 'Menyimpan cadangan makanan, air, dan pigmen sel', 'Pusat pengendali seluruh metabolisme dan pembawa informasi genetik'], a: 0 },
+            { type: 'JD', q: 'Pasangkan bagian mekanis mikroskop berikut ini dengan fungsinya yang paling tepat!', sub: 'Makrometer (Pemutar kasar)', hint: 'Pilih opsi drop-down pencocokan yang sesuai.', opts: ['Tempat menaruh kaca objek/sediaan yang akan diamati', 'Mengganti atau memilih tingkat perbesaran lensa objektif', 'Menaik-turunkan tabung mikroskop secara cepat untuk mencari fokus awal'], a: 2 },
+            { type: 'PG', q: 'Mengapa sel tumbuhan cenderung memiliki bentuk yang tetap dan kaku bila dibandingkan dengan sel hewan?', hint: 'Pilihlah satu jawaban yang paling tepat.', opts: ['Karena tumbuhan memiliki membran sel tebal', 'Karena tumbuhan memiliki organel dinding sel dari selulosa', 'Karena tumbuhan mengandung banyak air di sitoplasmanya', 'Karena sel tumbuhan tidak mempunyai nukleus'], a: 1 },
+            { type: 'BS', q: 'Pernyataan: Robert Hooke mengamati sel hidup yang sedang aktif membelah diri ketika ia melihat sayatan gabus pohon ek di bawah mikroskop.', hint: 'Tentukan Benar atau Salah pernyataan di atas.', opts: ['Benar', 'Salah'], a: 1 },
+            { type: 'JD', q: 'Jodohkanlah ilmuwan-ilmuwan hebat berikut dengan kontribusinya bagi dunia mikroskopi!', sub: 'Antony van Leeuwenhoek', hint: 'Pilih opsi drop-down pencocokan yang sesuai.', opts: ['Menemukan istilah sel pertama kali saat meneliti gabus ek', 'Membuat lensa mikroskop berkualitas tinggi dan mengamati makhluk hidup satu sel mikroskopis di air hujan', 'Menyatakan pertama kali bahwa sel berasal dari pembelahan sel sebelumnya'], a: 1 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = {}; // Menyimpan jawaban user
+
+        function startQuiz() {
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-workspace').classList.remove('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const currentQuestion = quizDatabase[currentQuestionIndex];
+            
+            // Atur Label Tipe Soal & Nomor
+            let typeText = 'Pilihan Ganda';
+            if(currentQuestion.type === 'BS') typeText = 'Benar / Salah';
+            if(currentQuestion.type === 'MA') typeText = 'Pilihan Lebih dari 1 (Kompleks)';
+            if(currentQuestion.type === 'JD') typeText = 'Menjodohkan (Matching)';
+            
+            document.getElementById('question-type-badge').innerText = typeText;
+            document.getElementById('question-number').innerText = `Soal ${currentQuestionIndex + 1} dari ${quizDatabase.length}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQuestionIndex + 1) / quizDatabase.length) * 100}%`;
+            
+            // Atur Teks Pertanyaan & Hint
+            let finalQText = currentQuestion.q;
+            if(currentQuestion.type === 'JD') {
+                finalQText += `<br><span class="block mt-2 font-bold text-emerald-700">Unsur / Bagian: <span class="bg-emerald-100 px-2 py-0.5 rounded text-sm">${currentQuestion.sub}</span></span>`;
+            }
+            document.getElementById('question-text').innerHTML = finalQText;
+            document.getElementById('hint-text').innerText = currentQuestion.hint;
+
+            // Render Opsi Berdasarkan Tipe
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            if (currentQuestion.type === 'PG' || currentQuestion.type === 'BS') {
+                currentQuestion.opts.forEach((opt, idx) => {
+                    const isSelected = userAnswers[currentQuestionIndex] === idx;
+                    const charPrefix = currentQuestion.type === 'PG' ? String.fromCharCode(65 + idx) + '.' : '';
+                    const btn = document.createElement('div');
+                    btn.className = `p-3.5 border rounded-xl cursor-pointer text-sm font-medium flex items-center gap-3 transition ${isSelected ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'}`;
+                    btn.onclick = () => selectSingleAnswer(idx);
+                    btn.innerHTML = `<span class="w-6 h-6 rounded-lg ${isSelected ? 'bg-emerald-600 text-white' : 'bg-gray-100 text-gray-500'} flex items-center justify-center font-bold text-xs shrink-0">${charPrefix || '✓'}</span> <span>${opt}</span>`;
+                    optionsContainer.appendChild(btn);
+                });
+            } else if (currentQuestion.type === 'MA') {
+                const selectedList = userAnswers[currentQuestionIndex] || [];
+                currentQuestion.opts.forEach((opt, idx) => {
+                    const isChecked = selectedList.includes(idx);
+                    const item = document.createElement('div');
+                    item.className = `p-3.5 border rounded-xl cursor-pointer text-sm font-medium flex items-center gap-3 transition ${isChecked ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold' : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'}`;
+                    item.onclick = () => toggleMultipleAnswer(idx);
+                    item.innerHTML = `<div class="w-5 h-5 border rounded ${isChecked ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-gray-300 bg-white'} flex items-center justify-center text-xs shrink-0"><i class="fa-solid fa-check ${isChecked ? '' : 'hidden'}"></i></div> <span>${opt}</span>`;
+                    optionsContainer.appendChild(item);
+                });
+            } else if (currentQuestion.type === 'JD') {
+                const selectedDropIdx = userAnswers[currentQuestionIndex];
+                const selectWrapper = document.createElement('div');
+                selectWrapper.className = 'space-y-3';
+                
+                let selectHtml = `<select onchange="selectDropAnswer(this.value)" class="w-full p-3 border border-gray-300 rounded-xl text-sm bg-white focus:outline-none focus:border-emerald-600 shadow-sm text-gray-700">
+                    <option value="">-- Pilih Jawaban Jodoh yang Pas Di Sini --</option>`;
+                currentQuestion.opts.forEach((opt, idx) => {
+                    selectHtml += `<option value="${idx}" ${selectedDropIdx == idx ? 'selected' : ''}>Opsi ${String.fromCharCode(65 + idx)}: ${opt}</option>`;
+                });
+                selectHtml += `</select>`;
+                
+                // Tambahkan Legenda Opsi agar rapi
+                let legendHtml = `<div class="mt-4 bg-gray-50 p-3 rounded-xl border border-gray-100 space-y-1.5"><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Opsi Jawaban Jodoh:</p>`;
+                currentQuestion.opts.forEach((opt, idx) => {
+                    legendHtml += `<p class="text-xs text-gray-600"><strong>${String.fromCharCode(65 + idx)}:</strong> ${opt}</p>`;
+                });
+                legendHtml += `</div>`;
+                
+                selectWrapper.innerHTML = selectHtml + legendHtml;
+                optionsContainer.appendChild(selectWrapper);
+            }
+
+            // Atur teks status indikator pengisian halaman kuis
+            updateStatusIndicator();
+            
+            // Atur tombol Next / Selesai
+            const btnNext = document.getElementById('btn-next');
+            if (currentQuestionIndex === quizDatabase.length - 1) {
+                btnNext.innerText = 'Kirim Semua Jawaban';
+                btnNext.className = 'px-5 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg text-sm font-bold transition';
+            } else {
+                btnNext.innerText = 'Berikutnya';
+                btnNext.className = 'px-5 py-2 bg-emerald-700 text-white hover:bg-emerald-800 rounded-lg text-sm font-bold transition';
+            }
+            document.getElementById('btn-prev').disabled = currentQuestionIndex === 0;
+        }
+
+        function updateStatusIndicator() {
+            const indicator = document.getElementById('quiz-status-indicator');
+            const ans = userAnswers[currentQuestionIndex];
+            if (ans === undefined || ans === null || (Array.isArray(ans) && ans.length === 0) || ans === '') {
+                indicator.innerText = 'Belum Diisi';
+                indicator.className = 'text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-100';
+            } else {
+                indicator.innerText = 'Sudah Diisi';
+                indicator.className = 'text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100';
+            }
+        }
+
+        function selectSingleAnswer(idx) {
+            userAnswers[currentQuestionIndex] = idx;
+            renderQuestion();
+        }
+
+        function toggleMultipleAnswer(idx) {
+            if (!userAnswers[currentQuestionIndex]) userAnswers[currentQuestionIndex] = [];
+            const list = userAnswers[currentQuestionIndex];
+            const foundIdx = list.indexOf(idx);
+            if (foundIdx > -1) list.splice(foundIdx, 1);
+            else list.push(idx);
+            renderQuestion();
+        }
+
+        function selectDropAnswer(val) {
+            if(val === '') userAnswers[currentQuestionIndex] = undefined;
+            else userAnswers[currentQuestionIndex] = parseInt(val);
+            updateStatusIndicator();
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizDatabase.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                calculateQuizResult();
+            }
+        }
+
+        function calculateQuizResult() {
+            let correctCount = 0;
+            quizDatabase.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                if (q.type === 'PG' || q.type === 'BS' || q.type === 'JD') {
+                    if (userAns === q.a) correctCount++;
+                } else if (q.type === 'MA') {
+                    if (Array.isArray(userAns)) {
+                        const isMatch = userAns.length === q.a.length && userAns.every(v => q.a.includes(v));
+                        if (isMatch) correctCount++;
+                    }
+                }
+            });
+
+            const score = Math.round((correctCount / quizDatabase.length) * 100);
+            const isLulus = score >= 75;
+
+            document.getElementById('quiz-workspace').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.remove('hidden');
+
+            const scoreBox = document.getElementById('result-score');
+            scoreBox.innerText = `${score} / 100`;
+            document.getElementById('result-ratio').innerText = `${correctCount} Benar / ${quizDatabase.length - correctCount} Salah`;
+
+            const iconBox = document.getElementById('result-icon-box');
+            const titleEl = document.getElementById('result-title');
+            const statusText = document.getElementById('result-status-text');
+
+            if (isLulus) {
+                iconBox.className = "w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto border border-emerald-100";
+                iconBox.innerHTML = '<i class="fa-solid fa-square-check"></i>';
+                titleEl.className = "text-2xl font-bold text-gray-900";
+                scoreBox.className = "text-right font-black text-2xl text-emerald-700";
+                statusText.innerText = "Selamat, kamu dinyatakan lulus KKM kompetensi materi ini!";
+            } else {
+                iconBox.className = "w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center text-3xl mx-auto border border-red-100";
+                iconBox.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+                titleEl.className = "text-2xl font-bold text-gray-900";
+                scoreBox.className = "text-right font-black text-2xl text-red-600";
+                statusText.innerText = "Nilai kamu belum mencapai KKM 75. Silakan baca ulang materi dan coba kembali!";
+            }
+        }
+
+        function resetQuiz() {
+            startQuiz();
+        }
+
+        // --- 4. TANYA GURU AI ENGINE (INTEGRATED CHAT TIER) ---
+        function handleSendChat(event) {
+            event.preventDefault();
+            const inputField = document.getElementById('chat-input-field');
+            const userText = inputField.value.trim();
+            if(!userText) return;
+
+            const chatContainer = document.getElementById('chat-box-container');
+
+            // 1. Tampilkan Chat User
+            const userBubble = document.createElement('div');
+            userBubble.className = "flex gap-3 max-w-[85%] ml-auto justify-end";
+            userBubble.innerHTML = `<div class="bg-emerald-700 text-white p-3 rounded-2xl rounded-tr-none leading-relaxed text-sm">${userText}</div>`;
+            chatContainer.appendChild(userBubble);
+            
+            inputField.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // 2. Berikan Jawaban Tiruan Pintar Sesuai Keyword Materi Bab 1
+            setTimeout(() => {
+                const aiBubble = document.createElement('div');
+                aiBubble.className = "flex gap-3 max-w-[85%]";
+                
+                let aiResponse = "Pertanyaan bagus! Namun pastikan topik yang ditanyakan seputar sel atau mikroskop Bab 1 Kelas 8 ya. Ada yang bisa saya bantu jelaskan ulang tentang organel atau cara penggunaan mikroskop?";
+                const cleanTxt = userText.toLowerCase();
+
+                if(cleanTxt.includes('beda') || cleanTxt.includes('perbedaan') || cleanTxt.includes('hewan') && cleanTxt.includes('tumbuhan')) {
+                    aiResponse = "Perbedaan utamanya terletak pada **Dinding Sel** dan **Kloroplas**. Sel tumbuhan memilikinya sehingga berbentuk kaku dan bisa berfotosintesis, sedangkan sel hewan tidak punya sehingga bentuknya fleksibel. Selain itu, vakuola tumbuhan sangat besar sedangkan sel hewan kecil/tidak ada.";
+                } else if(cleanTxt.includes('mikroskop') || cleanTxt.includes('lensa') || cleanTxt.includes('makrometer')) {
+                    aiResponse = "Untuk mengoperasikan mikroskop dengan aman, selalu mulai dengan lensa objektif perbesaran paling rendah. Gunakan **makrometer** untuk mencari bayangan kasar secara cepat, lalu putar **mikrometer** (pemutar halus) agar objek terlihat jernih dan tajam.";
+                } else if(cleanTxt.includes('fungsi klorofil') || cleanTxt.includes('kloroplas') || cleanTxt.includes('fotosintesis')) {
+                    aiResponse = "Kloroplas adalah organel khusus tumbuhan yang mengandung zat hijau daun bernama **klorofil**. Fungsinya adalah menangkap energi cahaya matahari untuk mengubah air dan gas karbon dioksida menjadi gula/energi (proses fotosintesis).";
+                } else if(cleanTxt.includes('nukleus') || cleanTxt.includes('inti sel')) {
+                    aiResponse = "Nukleus atau inti sel bertindak seperti otak bagi sel. Dialah yang mengendalikan seluruh proses pembelahan, pembentukan protein, metabolisme sel, serta menyimpan materi genetik berharga berupa pita DNA.";
+                }
+
+                aiBubble.innerHTML = `<div class="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs shrink-0 font-bold">AI</div>
+                <div class="bg-gray-100 text-gray-800 p-3 rounded-2xl rounded-tl-none leading-relaxed text-sm">${aiResponse}</div>`;
+                chatContainer.appendChild(aiBubble);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 750);
+        }
+    </script>
+    <script>
+        // Memicu rendering otomatis notasi formula matematika dari rumus LaTeX di atas halaman
+        if (window.MathJax) {
+            window.MathJax.typesetPromise();
+        }
+    </script>
 </body>
 </html>
