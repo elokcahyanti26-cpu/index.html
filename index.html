@@ -13,20 +13,45 @@
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen">
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen antialiased">
 
   <div id="root"></div>
 
   <script type="text/babel">
     const { useState } = React;
 
-    // --- DATA MATERI LENGKAP ---
+    // ==========================================
+    // DATA DATABASE KISI-KISI & MATERI LENGKAP
+    // ==========================================
+    const KISIKISI_DATA = [
+      { no: 1, topik: "Pengenalan Sel", indikator: "Siswa dapat menjelaskan pengertian sel dan mengidentifikasi penemu sel pertama kali.", level: "C1 (Mengingat)", bentuk: "Pilihan Ganda & Menjodohkan" },
+      { no: 2, topik: "Uniseluler & Multiseluler", indikator: "Siswa dapat membedakan ciri-ciri organisme uniseluler dan multiseluler beserta contohnya.", level: "C2 (Memahami)", bentuk: "Pilihan Ganda & Pilihan Ganda Kompleks" },
+      { no: 3, topik: "Organel Sel", indikator: "Siswa dapat mencocokkan nama organel sel dengan fungsi spesifiknya di dalam sel.", level: "C3 (Menerapkan)", border: true, bentuk: "Menjodohkan & Benar/Salah" },
+      { no: 4, topik: "Perbedaan Sel", indikator: "Siswa dapat menganalisis perbedaan struktur sel tumbuhan dan sel hewan berdasarkan keberadaan organel tertentu.", level: "C4 (Menganalisis)", bentuk: "Benar/Salah & Pilihan Ganda Kompleks" },
+      { no: 5, topik: "Bagian Mikroskop", indikator: "Siswa dapat mengidentifikasi bagian optik dan mekanik pada mikroskop beserta fungsinya.", level: "C2 (Memahami)", bentuk: "Pilihan Ganda Kompleks & Menjodohkan" },
+      { no: 6, topik: "Langkah Kerja Mikroskop", indikator: "Siswa dapat mengurutkan langkah-langkah penggunaan mikroskop secara runut dan aman.", level: "C3 (Menerapkan)", bentuk: "Benar/Salah & Pilihan Ganda" }
+    ];
+
     const MATERI_DATA = {
       sel: {
         title: "Pengenalan Sel",
@@ -34,285 +59,207 @@
         sections: [
           {
             title: "1. Apa itu Sel?",
-            content: "Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh Robert Hooke pada tahun 1665 saat mengamati sayatan gabus pohon ek di bawah mikroskop sederhana. Teori sel modern menyatakan bahwa semua makhluk hidup terdiri dari satu atau lebih sel, dan semua sel berasal dari sel yang sudah ada sebelumnya.",
-            badge: "Sejarah"
+            badge: "Sejarah",
+            badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+            content: "Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh Robert Hooke pada tahun 1665 saat mengamati sayatan gabus pohon ek di bawah mikroskop sederhana. Teori sel modern menyatakan bahwa semua makhluk hidup terdiri dari satu atau lebih sel, dan semua sel berasal dari sel yang sudah ada sebelumnya."
           },
           {
             title: "2. Spesialisasi Sel (Uniseluler vs Multiseluler)",
-            content: "Makhluk hidup dapat dibagi berdasarkan jumlah sel penyusunnya: 1) Uniseluler: Organisme yang hanya terdiri dari satu sel tunggal (Contoh: Bakteri, Amoeba, Paramecium). 2) Multiseluler: Organisme yang terdiri dari banyak sel yang bekerja sama (Contoh: Manusia, Hewan, Tumbuhan). Pada organisme multiseluler, terjadi spesialisasi sel di mana sel memiliki bentuk dan fungsi yang berbeda-beda.",
-            badge: "Klasifikasi"
+            badge: "Klasifikasi",
+            badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+            content: "Makhluk hidup dapat dibagi berdasarkan jumlah sel penyusunnya:\n• Uniseluler: Organisme yang hanya terdiri dari satu sel tunggal (Contoh: Bakteri, Amoeba, Paramecium).\n• Multiseluler: Organisme yang terdiri dari banyak sel yang bekerja sama (Contoh: Manusia, Hewan, Tumbuhan). Pada organisme multiseluler, terjadi spesialisasi sel di mana sel memiliki bentuk dan fungsi yang berbeda-beda."
           },
           {
             title: "3. Organel Sel (Bagian di dalam Sel)",
-            content: "Organel adalah struktur khusus di dalam sel yang menjalankan fungsi spesifik: Nukleus (Inti Sel) sebagai pusat kendali sel dan tempat menyimpan informasi genetik (DNA); Membran Sel sebagai pelindung terluar yang mengatur keluar masuknya zat; Sitoplasma sebagai cairan tempat berlangsungnya reaksi kimia sel; Mitokondria sebagai tempat penghasil energi (respirasi sel); Vakuola sebagai tempat penyimpanan air dan makanan; Kloroplas (hanya pada tumbuhan) sebagai tempat fotosintesis; serta Dinding Sel (hanya pada tumbuhan) untuk memberi bentuk kaku dan perlindungan ekstra.",
-            badge: "Organel"
+            badge: "Organel",
+            badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
+            content: "Organel adalah struktur khusus di dalam sel yang menjalankan fungsi spesifik:\n• Nukleus (Inti Sel): Pusat kendali sel, menyimpan informasi genetik (DNA).\n• Membran Sel: Pelindung terluar yang mengatur keluar masuknya zat.\n• Sitoplasma: Cairan tempat berlangsungnya reaksi kimia sel.\n• Mitokondria: Tempat penghasil energi (respirasi sel).\n• Vakuola: Tempat penyimpanan air dan makanan.\n• Kloroplas: Hanya pada tumbuhan, tempat fotosintesis.\n• Dinding Sel: Hanya pada tumbuhan, memberi bentuk kaku dan perlindungan ekstra."
           }
         ]
       },
       mikroskop: {
-        title: "Mikroskop",
-        subtitle: "Melihat Dunia Mikro",
+        title: "Alat Optik Mikroskop",
+        subtitle: "Membuka Jendela Dunia Mikro",
         sections: [
           {
             title: "1. Mengenal Mikroskop",
-            content: "Mikroskop adalah alat bantu utama untuk mengamati objek-objek berukuran sangat kecil (mikroskopis) seperti sel bakteri, jaringan tumbuhan, maupun protozoa yang tidak kasat mata. Penemu mikroskop pertama yang diakui secara luas adalah Zacharias Janssen pada tahun 1590, diikuti oleh penyempurnaan oleh Antony van Leeuwenhoek.",
-            badge: "Alat Optik"
+            badge: "Alat Optik",
+            badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+            content: "Mikroskop adalah alat bantu utama untuk mengamati objek-objek berukuran sangat kecil (mikroskopis) seperti sel bakteri, jaringan tumbuhan, maupun protozoa yang tidak kasat mata. Penemu mikroskop pertama yang diakui secara luas adalah Zacharias Janssen pada tahun 1590, diikuti oleh penyempurnaan oleh Antony van Leeuwenhoek."
           },
           {
             title: "2. Bagian-Bagian Mikroskop",
-            content: "Secara umum, mikroskop memiliki dua bagian utama. Pertama, Bagian Optik (berhubungan dengan cahaya & lensa) yang terdiri dari Lensa Okuler (dekat mata pengamat), Lensa Objektif (dekat objek), Kondensor (mengumpulkan cahaya), Diafragma (mengatur jumlah cahaya), dan Cermin/Lampu sebagai sumber cahaya. Kedua, Bagian Mekanik (berhubungan dengan penyangga) yang terdiri dari Makrometer (pemutar kasar untuk fokus cepat), Mikrometer (pemutar halus untuk menajamkan gambar), Revolver (memilih perbesaran lensa), Meja Preparat (tempat objek), dan Penjepit Objek.",
-            badge: "Struktur"
+            badge: "Struktur",
+            badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+            content: "Secara umum, mikroskop memiliki dua bagian utama:\n1. Bagian Optik (berhubungan dengan cahaya & lensa): Terdiri dari Lensa Okuler (dekat mata pengamat), Lensa Objektif (dekat objek), Kondensor (mengumpulkan cahaya), Diafragma (mengatur jumlah cahaya), dan Cermin/Lampu sebagai sumber cahaya.\n2. Bagian Mekanik (berhubungan dengan penyangga): Terdiri dari Makrometer (pemutar kasar untuk fokus cepat), Mikrometer (pemutar halus untuk menajamkan gambar), Revolver (memilih perbesaran lensa), Meja Preparat (tempat objek), dan Penjepit Objek."
           },
           {
             title: "3. Langkah Menggunakan Mikroskop",
-            content: "Langkah-langkah yang benar: 1) Letakkan mikroskop di meja yang rata dengan memegang lengan dan menyangga kakinya. 2) Putar revolver untuk memilih lensa objektif perbesaran terendah. 3) Atur cermin dan diafragma agar lapang pandang terlihat terang maksimal. 4) Letakkan preparat di meja objek lalu jepit. 5) Putar makrometer untuk mendekatkan lensa objektif ke preparat sambil dilihat dari samping. 6) Intip melalui lensa okuler, lalu putar makrometer ke atas secara perlahan hingga objek terlihat. 7) Putar mikrometer untuk memfokuskan objek agar gambar terlihat tajam.",
-            badge: "Prosedur"
+            badge: "Prosedur",
+            badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
+            content: "Langkah-langkah yang benar: 1) Letakkan mikroskop di meja yang rata dengan memegang lengan dan menyangga kakinya. 2) Putar revolver untuk memilih lensa objektif perbesaran terendah. 3) Atur cermin dan diafragma agar lapang pandang terlihat terang maksimal. 4) Letakkan preparat di meja objek lalu jepit. 5) Putar makrometer untuk mendekatkan lensa objektif ke preparat sambil dilihat dari samping. 6) Intip melalui lensa okuler, lalu putar makrometer ke atas secara perlahan hingga objek terlihat. 7) Putar mikrometer untuk memfokuskan objek agar gambar terlihat tajam."
           }
         ]
       }
     };
 
-    // --- DATA KISI-KISI LENGKAP ---
-    const KISIKISI_DATA = [
-      { no: "1", materi: "Pengenalan Sel", indikator: "Siswa dapat menjelaskan pengertian sel dan mengidentifikasi penemu sel pertama kali.", level: "C1", tipe: "Pilihan Ganda" },
-      { no: "2", materi: "Uniseluler & Multiseluler", indikator: "Siswa dapat membedakan ciri-ciri organisme uniseluler dan multiseluler beserta contohnya.", level: "C2", tipe: "Pilihan Ganda" },
-      { no: "3", materi: "Organel Sel", indikator: "Siswa dapat mencocokkan nama organel sel dengan fungsi spesifiknya di dalam sel.", level: "C3", tipe: "Pilihan Ganda" },
-      { no: "4", materi: "Perbedaan Sel", indikator: "Siswa dapat menganalisis perbedaan struktur sel tumbuhan dan sel hewan berdasarkan keberadaan organel tertentu.", level: "C4", tipe: "Pilihan Ganda" },
-      { no: "5", materi: "Bagian Mikroskop", indikator: "Siswa dapat mengidentifikasi bagian optik dan mekanik pada mikroskop beserta fungsinya.", level: "C2", tipe: "Pilihan Ganda" },
-      { no: "6", materi: "Langkah Kerja Mikroskop", indikator: "Siswa dapat mengurutkan langkah-langkah penggunaan mikroskop secara runut dan aman.", level: "C3", tipe: "Pilihan Ganda" }
-    ];
-
-    // --- DATA KUIS INTERAKTIF LENGKAP ---
-    const KUIS_QUESTIONS = [
-      {
-        id: 1,
-        question: "Siapakah ilmuwan yang pertama kali menemukan istilah 'sel' pada tahun 1665 saat mengamati sayatan gabus?",
-        options: [
-          { key: "A", text: "Antony van Leeuwenhoek" },
-          { key: "B", text: "Robert Hooke" },
-          { key: "C", text: "Rudolf Virchow" },
-          { key: "D", text: "Theodor Schwann" }
-        ],
-        answer: "B",
-        explanation: "Robert Hooke adalah ilmuwan pertama yang menemukan ruang-ruang kecil kosong dari sayatan gabus pohon ek yang kemudian ia sebut dengan nama 'cell' (sel)."
-      },
-      {
-        id: 2,
-        question: "Manakah di bawah ini yang merupakan contoh organisme uniseluler?",
-        options: [
-          { key: "A", text: "Amoeba dan Bakteri" },
-          { key: "B", text: "Jamur Kuping dan Lumut" },
-          { key: "C", text: "Cacing tanah dan Paramecium" },
-          { key: "D", text: "Semut dan Ganggang hijau" }
-        ],
-        answer: "A",
-        explanation: "Amoeba dan Bakteri adalah contoh organisme uniseluler, yaitu makhluk hidup yang seluruh aktivitas hidupnya dilakukan oleh satu sel tunggal."
-      },
-      {
-        id: 3,
-        question: "Organel sel yang berfungsi sebagai pusat kendali seluruh aktivitas sel dan menyimpan materi genetik (DNA) adalah...",
-        options: [
-          { key: "A", text: "Mitokondria" },
-          { key: "B", text: "Sitoplasma" },
-          { key: "C", text: "Nukleus" },
-          { key: "D", text: "Kloroplas" }
-        ],
-        answer: "C",
-        explanation: "Nukleus atau inti sel bertindak sebagai otak sel yang mengontrol semua kegiatan seluler dan membawa informasi keturunan (DNA)."
-      },
-      {
-        id: 4,
-        question: "Sel tumbuhan memiliki struktur pelindung luar yang kaku dan tidak dimiliki oleh sel hewan. Struktur tersebut adalah...",
-        options: [
-          { key: "A", text: "Membran Sel" },
-          { key: "B", text: "Dinding Sel" },
-          { key: "C", text: "Sitoplasma" },
-          { key: "D", text: "Vakuola" }
-        ],
-        answer: "B",
-        explanation: "Dinding sel hanya ditemukan pada sel tumbuhan dan berfungsi memberikan perlindungan mekanis serta mempertahankan bentuk sel agar tetap kaku."
-      },
-      {
-        id: 5,
-        question: "Pada mikroskop, bagian mekanik yang digunakan untuk memutar dan memilih perbesaran lensa objektif yang diinginkan disebut...",
-        options: [
-          { key: "A", text: "Makrometer" },
-          { key: "B", text: "Revolver" },
-          { key: "C", text: "Diafragma" },
-          { key: "D", text: "Kondensor" }
-        ],
-        answer: "B",
-        explanation: "Revolver adalah lempengan cakram yang dapat diputar untuk memindahkan posisi lensa objektif dengan variasi perbesaran yang berbeda."
-      }
+    // ==========================================
+    // DATABASE KUIS EVALUASI 15 NOMOR LENGKAP
+    // ==========================================
+    const INTERACTIVE_QUIZ_QUESTIONS = [
+      { id: 1, type: "pilihan-ganda", question: "Siapakah ilmuwan yang pertama kali menemukan istilah 'sel' pada tahun 1665 saat mengamati sayatan gabus pohon ek?", options: ["Antony van Leeuwenhoek", "Robert Hooke", "Rudolf Virchow", "Theodor Schwann"], answer: "Robert Hooke", hint: "Pilihlah satu jawaban yang paling tepat. Langsung klik atau ketuk pada area salah satu pilihan (A, B, C, atau D) di bawah ini." },
+      { id: 2, type: "pilihan-ganda", question: "Manakah di bawah ini yang merupakan contoh organisme uniseluler?", options: ["Amoeba dan Bakteri", "Jamur Kuping dan Lumut", "Cacing tanah dan Paramecium", "Semut dan Ganggang hijau"], answer: "Amoeba dan Bakteri", hint: "Pilihlah satu jawaban yang paling tepat. Langsung klik atau ketuk pada area salah satu pilihan (A, B, C, atau D) di bawah ini." },
+      { id: 3, type: "pilihan-ganda", question: "Organel sel yang berfungsi sebagai pusat kendali seluruh aktivitas sel dan menyimpan materi genetik (DNA) adalah...", options: ["Mitokondria", "Sitoplasma", "Nukleus", "Kloroplas"], answer: "Nukleus", hint: "Pilihlah satu jawaban yang paling tepat. Langsung klik atau ketuk pada area salah satu pilihan (A, B, C, atau D) di bawah ini." },
+      { id: 4, type: "benar-salah", question: "Pernyataan: Sel hewan memiliki dinding sel yang kaku untuk memberikan perlindungan mekanis dan menjaga bentuk sel tetap stabil.", answer: "Salah", hint: "Bacalah kalimat pernyataan di atas secara saksama. Tentukan keputusanmu dengan mengklik tombol 'Benar' atau 'Salah' (merah)." },
+      { id: 5, type: "benar-salah", question: "Pernyataan: Lensa objektif pada mikroskop adalah lensa yang posisinya berada paling dekat dengan mata pengamat saat praktikum.", answer: "Salah", hint: "Bacalah kalimat pernyataan di atas secara saksama. Tentukan keputusanmu dengan mengklik tombol 'Benar' atau 'Salah' (merah)." },
+      { id: 6, type: "benar-salah", question: "Pernyataan: Sebelum mengamati objek dengan perbesaran tinggi, kita harus mengatur dan memfokuskan bayangan menggunakan lensa objektif perbesaran terendah terlebih dahulu.", answer: "Benar", hint: "Bacalah kalimat pernyataan di atas secara saksama. Tentukan keputusanmu dengan mengklik tombol 'Benar' atau 'Salah' (merah)." },
+      { id: 7, type: "benar-salah", question: "Pernyataan: Mitokondria adalah tempat berlangsungnya respirasi sel untuk menghasilkan energi utama bagi kelangsungan hidup sel.", answer: "Benar", hint: "Bacalah kalimat pernyataan di atas secara saksama. Tentukan keputusanmu dengan mengklik tombol 'Benar' atau 'Salah' (merah)." },
+      { id: 8, type: "pilihan-kompleks", question: "Manakah dari organel berikut yang HANYA dapat ditemukan di dalam sel tumbuhan? (Pilih semua jawaban yang benar):", options: ["Kloroplas", "Dinding Sel", "Lisosom", "Ribosom"], answer: ["Kloroplas", "Dinding Sel"], hint: "Soal ini memiliki lebih dari satu jawaban benar. Berikan tanda centang (✓) pada semua kotak pilihan yang kamu yakini tepat!" },
+      { id: 9, type: "pilihan-kompleks", question: "Manakah dari komponen berikut yang termasuk ke dalam bagian optik mikroskop? (Pilih semua jawaban yang benar):", options: ["Lensa Okuler", "Revolver", "Cermin / Lampu Sumber Cahaya", "Meja Preparat"], answer: ["Lensa Okuler", "Cermin / Lampu Sumber Cahaya"], hint: "Soal ini memiliki lebih dari satu jawaban benar. Berikan tanda centang (✓) pada semua kotak pilihan yang kamu yakini tepat!" },
+      { id: 10, type: "pilihan-kompleks", question: "Manakah di bawah ini yang merupakan ciri-ciri mutlak dari organisme multiseluler? (Pilih semua jawaban yang benar):", options: ["Tubuhnya tersusun atas banyak sel", "Seluruh fungsi hidup diatur oleh satu sel saja", "Terjadi spesialisasi atau diferensiasi fungsi sel", "Memiliki organel kloroplas di semua jenis spesiesnya."], answer: ["Tubuhnya tersusun atas banyak sel", "Terjadi spesialisasi atau diferensiasi fungsi sel"], hint: "Soal ini memiliki lebih dari satu jawaban benar. Berikan tanda centang (✓) pada semua kotak pilihan yang kamu yakini tepat!" },
+      { id: 11, type: "menjodohkan", question: "Jodohlahkan organel-organel sel berikut dengan fungsinya secara tepat!", items: [
+          { left: "Nukleus", options: ["Mengatur keluar masuknya zat dan melindungi isi sel", "Menyimpan cadangan makanan, air, dan pigmen sel", "Pusat pengendali seluruh metabolisme dan pembawa informasi genetik"], rightAnswer: "Pusat pengendali seluruh metabolisme and pembawa informasi genetik" },
+          { left: "Vakuola Tumbuhan", options: ["Mengatur keluar masuknya zat dan melindungi isi sel", "Menyimpan cadangan makanan, air, dan pigmen sel", "Pusat pengendali seluruh metabolisme dan pembawa informasi genetik"], rightAnswer: "Menyimpan cadangan makanan, air, dan pigmen sel" },
+          { left: "Membran Sel", options: ["Mengatur keluar masuknya zat dan melindungi isi sel", "Menyimpan cadangan makanan, air, dan pigmen sel", "Pusat pengendali seluruh metabolisme dan pembawa informasi genetik"], rightAnswer: "Mengatur keluar masuknya zat dan melindungi isi sel" }
+        ], hint: "Jodohkan setiap butir di kolom kiri dengan jawaban pasangannya di kolom kanan. Klik kotak menu pilihan (dropdown) di kolom kiri dan pilih opsi huruf yang sesuai." },
+      { id: 12, type: "menjodohkan", question: "Pasangkan bagian mekanis mikroskop berikut ini dengan fungsinya yang paling tepat!", items: [
+          { left: "Makrometer (Pemutar Kasar)", options: ["Tempat menaruh kaca objek/sediaan yang akan diamati", "Mengganti atau memilih tingkat perbesaran lensa objektif", "Menaik-turunkan tabung mikroskop secara cepat untuk mencari fokus awal"], rightAnswer: "Menaik-turunkan tabung mikroskop secara cepat untuk mencari fokus awal" },
+          { left: "Revolver", options: ["Tempat menaruh kaca objek/sediaan yang akan diamati", "Mengganti atau memilih tingkat perbesaran lensa objektif", "Menaik-turunkan tabung mikroskop secara cepat untuk mencari fokus awal"], rightAnswer: "Mengganti atau memilih tingkat perbesaran lensa objektif" },
+          { left: "Meja Preparat", options: ["Tempat menaruh kaca objek/sediaan yang akan diamati", "Mengganti atau memilih tingkat perbesaran lensa objektif", "Menaik-turunkan tabung mikroskop secara cepat untuk mencari fokus awal"], rightAnswer: "Tempat menaruh kaca objek/sediaan yang akan diamati" }
+        ], hint: "Jodohkan setiap butir di kolom kiri dengan jawaban pasangannya di kolom kanan. Klik kotak menu pilihan (dropdown) di kolom kiri dan pilih opsi huruf yang sesuai." },
+      { id: 13, type: "pilihan-ganda", question: "Mengapa sel tumbuhan cenderung memiliki bentuk yang tetap dan kaku bila dibandingkan dengan sel hewan?", options: ["Karena tumbuhan memiliki membran sel tebal", "Karena tumbuhan memiliki organel dinding sel dari selulosa", "Karena tumbuhan mengandung banyak air di sitoplasmanya", "Karena sel tumbuhan tidak mempunyai nukleus"], answer: "Karena tumbuhan memiliki organel dinding sel dari selulosa", hint: "Pilihlah satu jawaban yang paling tepat. Langsung klik atau ketuk pada area salah satu pilihan (A, B, C, atau D) di bawah ini." },
+      { id: 14, type: "benar-salah", question: "Pernyataan: Robert Hooke mengamati sel hidup yang sedang aktif membelah diri ketika ia melihat sayatan gabus pohon ek di bawah mikroskop.", answer: "Salah", hint: "Bacalah kalimat pernyataan di atas secara saksama. Tentukan keputusanmu dengan mengklik tombol 'Benar' atau 'Salah' (merah)." },
+      { id: 15, type: "menjodohkan", question: "Jodohkan ilmuwan-ilmuwan hebat berikut dengan kontribusinya bagi dunia mikroskopi!", items: [
+          { left: "Zacharias Janssen", options: ["Menemukan sel pertama kali dari sayatan gabus", "Diakui sebagai penemu mikroskop pertama (1590)", "Ilmuwan pertama yang melihat mikroorganisme hidup sel tunggal"], rightAnswer: "Diakui sebagai penemu mikroskop pertama (1590)" },
+          { left: "Antonie van Leeuwenhoek", options: ["Menemukan sel pertama kali dari sayatan gabus", "Diakui sebagai penemu mikroskop pertama (1590)", "Ilmuwan pertama yang melihat mikroorganisme hidup sel tunggal"], rightAnswer: "Ilmuwan pertama yang melihat mikroorganisme hidup sel tunggal" },
+          { left: "Robert Hooke", options: ["Menemukan sel pertama kali dari sayatan gabus", "Diakui sebagai penemu mikroskop pertama (1590)", "Ilmuwan pertama yang melihat mikroorganisme hidup sel tunggal"], rightAnswer: "Menemukan sel pertama kali dari sayatan gabus" }
+        ], hint: "Jodohkan setiap butir di kolom kiri dengan jawaban pasangannya di kolom kanan. Klik kotak menu pilihan (dropdown) di kolom kiri dan pilih opsi huruf yang sesuai." }
     ];
 
     function App() {
       const [activeTab, setActiveTab] = useState('materi');
-      const [subMateri, setSubMateri] = useState('sel');
+      const [materiSubTab, setMateriSubTab] = useState('sel');
       
-      const [quizStarted, setQuizStarted] = useState(false);
-      const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-      const [selectedAnswers, setSelectedAnswers] = useState({});
+      // State untuk Manajemen Kuis 15 Nomor
+      const [quizActive, setQuizActive] = useState(false);
+      const [currentQIndex, setCurrentQIndex] = useState(0);
+      const [userAnswers, setUserAnswers] = useState({}); // { 0: 'Jawaban', 3: ['A','B'], 10: { 'Nukleus': 'Pusat...' } }
       const [quizSubmitted, setQuizSubmitted] = useState(false);
       const [score, setScore] = useState(0);
 
-      const startQuiz = () => {
-        setQuizStarted(true);
-        setCurrentQuestionIndex(0);
-        setSelectedAnswers({});
+      const resetQuiz = () => {
+        setQuizActive(true);
+        setCurrentQIndex(0);
+        setUserAnswers({});
         setQuizSubmitted(false);
         setScore(0);
       };
 
-      const handleSelectAnswer = (optionKey) => {
+      const handlePilihanGandaSelect = (ans) => {
         if (quizSubmitted) return;
-        setSelectedAnswers({ ...selectedAnswers, [currentQuestionIndex]: optionKey });
+        setUserAnswers({ ...userAnswers, [currentQIndex]: ans });
       };
 
-      const calculateScore = () => {
-        let correctCount = 0;
-        KUIS_QUESTIONS.forEach((q, idx) => {
-          if (selectedAnswers[idx] === q.answer) correctCount++;
+      const handleBenarSalahSelect = (ans) => {
+        if (quizSubmitted) return;
+        setUserAnswers({ ...userAnswers, [currentQIndex]: ans });
+      };
+
+      const handleKompleksToggle = (opt) => {
+        if (quizSubmitted) return;
+        const currentAns = userAnswers[currentQIndex] || [];
+        if (currentAns.includes(opt)) {
+          setUserAnswers({ ...userAnswers, [currentQIndex]: currentAns.filter(item => item !== opt) });
+        } else {
+          setUserAnswers({ ...userAnswers, [currentQIndex]: [...currentAns, opt] });
+        }
+      };
+
+      const handleMenjodohkanSelect = (itemLeft, selectedVal) => {
+        if (quizSubmitted) return;
+        const currentAns = userAnswers[currentQIndex] || {};
+        setUserAnswers({
+          ...userAnswers,
+          [currentQIndex]: { ...currentAns, [itemLeft]: selectedVal }
         });
-        setScore(Math.round((correctCount / KUIS_QUESTIONS.length) * 100));
+      };
+
+      const submitQuizAndCalculate = () => {
+        let correctPoints = 0;
+        INTERACTIVE_QUIZ_QUESTIONS.forEach((q, idx) => {
+          const userAns = userAnswers[idx];
+          if (!userAns) return;
+
+          if (q.type === "pilihan-ganda" || q.type === "benar-salah") {
+            if (userAns === q.answer) correctPoints++;
+          } 
+          else if (q.type === "pilihan-kompleks") {
+            const isMatch = Array.isArray(userAns) &&
+              userAns.length === q.answer.length &&
+              userAns.every(v => q.answer.includes(v));
+            if (isMatch) correctPoints++;
+          } 
+          else if (q.type === "menjodohkan") {
+            let allCorrect = true;
+            q.items.forEach(it => {
+              if (userAns[it.left] !== it.rightAnswer) allCorrect = false;
+            });
+            if (allCorrect) correctPoints++;
+          }
+        });
+
+        const finalScore = Math.round((correctPoints / INTERACTIVE_QUIZ_QUESTIONS.length) * 100);
+        setScore(finalScore);
         setQuizSubmitted(true);
       };
 
       return (
-        <div className="flex flex-col min-h-screen bg-slate-50">
-          <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
-            <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div>
-                <h1 className="text-2xl font-black tracking-tight">EduSel Kelas 8</h1>
-                <p className="text-emerald-100 text-xs font-semibold">Media Belajar Sel & Mikroskop SMP</p>
+        <div className="flex flex-col min-h-screen">
+          {/* BAR NAVIGASI ATAS PREMIUM */}
+          <header className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white shadow-xl sticky top-0 z-50 border-b border-emerald-600">
+            <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-11 h-11 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20 backdrop-blur-md">
+                  <i className="fa-solid fa-microscope text-2xl text-emerald-200"></i>
+                </div>
+                <div>
+                  <h1 className="text-2xl font-black tracking-tight leading-none">EduSel Kelas 8</h1>
+                  <p className="text-emerald-100 text-xs font-semibold tracking-wide mt-1">Aplikasi Belajar Sel & Mikroskop SMP • Kurikulum Merdeka</p>
+                </div>
               </div>
-              <nav className="flex bg-emerald-800 rounded-xl p-1 text-sm font-bold shadow-inner">
-                <button onClick={() => setActiveTab('materi')} className={`px-4 py-2.5 rounded-lg ${activeTab === 'materi' ? 'bg-white text-emerald-800' : 'text-emerald-100'}`}>Materi</button>
-                <button onClick={() => setActiveTab('kisikisi')} className={`px-4 py-2.5 rounded-lg ${activeTab === 'kisikisi' ? 'bg-white text-emerald-800' : 'text-emerald-100'}`}>Kisi-Kisi</button>
-                <button onClick={() => setActiveTab('kuis')} className={`px-4 py-2.5 rounded-lg ${activeTab === 'kuis' ? 'bg-white text-emerald-800' : 'text-emerald-100'}`}>Kuis Latihan</button>
+              
+              <nav className="flex bg-emerald-900/40 border border-white/10 rounded-2xl p-1.5 text-sm font-bold shadow-inner backdrop-blur-sm">
+                <button onClick={() => { setActiveTab('materi'); setQuizActive(false); }} className={`px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 ${activeTab === 'materi' ? 'bg-white text-emerald-800 shadow-md' : 'text-emerald-100 hover:bg-white/5'}`}>
+                  <i className="fa-solid fa-book-open text-xs"></i> Materi
+                </button>
+                <button onClick={() => { setActiveTab('kisikisi'); setQuizActive(false); }} className={`px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 ${activeTab === 'kisikisi' ? 'bg-white text-emerald-800 shadow-md' : 'text-emerald-100 hover:bg-white/5'}`}>
+                  <i className="fa-solid fa-table-list text-xs"></i> Kisi-Kisi
+                </button>
+                <button onClick={() => { setActiveTab('kuis'); }} className={`px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 ${activeTab === 'kuis' ? 'bg-white text-emerald-800 shadow-md' : 'text-emerald-100 hover:bg-white/5'}`}>
+                  <i className="fa-solid fa-graduation-cap text-xs"></i> Kuis Interaktif
+                </button>
               </nav>
             </div>
           </header>
 
+          {/* AREA UTAMA */}
           <main className="flex-grow max-w-6xl w-full mx-auto px-4 py-8">
+            
+            {/* 1. KONTEN MENU MATERI */}
             {activeTab === 'materi' && (
               <div className="space-y-6">
-                <div className="flex gap-2 bg-white p-4 rounded-2xl shadow-sm border">
-                  <button onClick={() => setSubMateri('sel')} className={`px-4 py-2 rounded-xl text-sm font-bold ${subMateri === 'sel' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600'}`}>🧬 Pengenalan Sel</button>
-                  <button onClick={() => setSubMateri('mikroskop')} className={`px-4 py-2 rounded-xl text-sm font-bold ${subMateri === 'mikroskop' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600'}`}>🔬 Alat Mikroskop</button>
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-150 flex flex-wrap gap-2.5">
+                  <div className="text-slate-400 font-bold text-xs uppercase tracking-wider self-center mr-2 pl-2">Materi Pembelajaran Bab 1</div>
+                  <button onClick={() => setMateriSubTab('sel')} className={`px-5 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2.5 ${materiSubTab === 'sel' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm' : 'text-slate-600 border border-transparent hover:bg-slate-50'}`}>
+                    <i className="fa-solid fa-dna text-emerald-600"></i> Pengenalan Sel
+                  </button>
+                  <button onClick={() => setMateriSubTab('mikroskop')} className={`px-5 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2.5 ${materiSubTab === 'mikroskop' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm' : 'text-slate-600 border border-transparent hover:bg-slate-50'}`}>
+                    <i className="fa-solid fa-microscope text-emerald-600"></i> Alat Mikroskop
+                  </button>
+                  <button onClick={() => setMateriSubTab('perbandingan')} className={`px-5 py-3 rounded-xl text-sm font-bold transition-all flex items-center gap-2.5 ${materiSubTab === 'perbandingan' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm' : 'text-slate-600 border border-transparent hover:bg-slate-50'}`}>
+                    <i className="fa-solid fa-scale-balanced text-emerald-600"></i> Perbandingan Sel
+                  </button>
                 </div>
 
-                <div className="bg-white p-6 rounded-3xl shadow-sm border">
-                  <h3 className="text-2xl font-black text-slate-900">{MATERI_DATA[subMateri]?.title}</h3>
-                  <p className="text-emerald-700 italic mb-4">{MATERI_DATA[subMateri]?.subtitle}</p>
-                  <div className="space-y-6">
-                    {MATERI_DATA[subMateri]?.sections.map((sec, idx) => (
-                      <div key={idx} className="border-b pb-4 last:border-0">
-                        <span className="inline-block bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-bold mb-2">{sec.badge}</span>
-                        <h4 className="font-bold text-slate-800 text-lg">{sec.title}</h4>
-                        <p className="text-slate-600 text-sm mt-2 leading-relaxed">{sec.content}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'kisikisi' && (
-              <div className="bg-white p-6 rounded-3xl shadow-sm border overflow-x-auto">
-                <h3 className="text-xl font-bold mb-4 text-slate-900">Matriks Kisi-Kisi Soal</h3>
-                <table className="w-full text-sm text-left border">
-                  <thead>
-                    <tr className="bg-slate-100">
-                      <th className="p-3 border">No</th>
-                      <th className="p-3 border">Materi Pokok</th>
-                      <th className="p-3 border">Indikator Soal</th>
-                      <th className="p-3 border">Level Kognitif</th>
-                      <th className="p-3 border">Bentuk</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {KISIKISI_DATA.map((k, i) => (
-                      <tr key={i} className="border-b hover:bg-slate-50">
-                        <td className="p-3 border font-bold text-center">{k.no}</td>
-                        <td className="p-3 border font-semibold text-emerald-800">{k.materi}</td>
-                        <td className="p-3 border text-slate-600 leading-relaxed">{k.indikator}</td>
-                        <td className="p-3 border font-mono text-center text-amber-700">{k.level}</td>
-                        <td className="p-3 border text-slate-500 text-xs">{k.tipe}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {activeTab === 'kuis' && (
-              <div className="max-w-2xl mx-auto">
-                {!quizStarted ? (
-                  <div className="bg-white p-8 rounded-3xl shadow-sm border text-center space-y-4">
-                    <div className="text-4xl">📝</div>
-                    <h2 className="text-2xl font-black text-slate-900">Kuis Interaktif Mandiri</h2>
-                    <p className="text-slate-500 text-sm max-w-sm mx-auto">Uji pemahaman siswa mengenai materi Struktur Sel dan Penggunaan Alat Mikroskop.</p>
-                    <button onClick={startQuiz} className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-6 py-3 rounded-xl transition shadow-md">Mulai Uji Kemampuan</button>
-                  </div>
-                ) : (
-                  <div className="bg-white p-6 rounded-3xl shadow-sm border space-y-4">
-                    <div className="flex justify-between items-center border-b pb-2">
-                      <span className="text-xs text-slate-400 font-bold tracking-wider">SOAL {currentQuestionIndex + 1} DARI {KUIS_QUESTIONS.length}</span>
-                    </div>
-                    
-                    <h3 className="text-lg font-bold text-slate-900 leading-snug">{KUIS_QUESTIONS[currentQuestionIndex].question}</h3>
-                    
-                    <div className="grid grid-cols-1 gap-2.5 pt-2">
-                      {KUIS_QUESTIONS[currentQuestionIndex].options.map((opt) => {
-                        const isSelected = selectedAnswers[currentQuestionIndex] === opt.key;
-                        return (
-                          <button
-                            key={opt.key}
-                            disabled={quizSubmitted}
-                            onClick={() => handleSelectAnswer(opt.key)}
-                            className={`p-3.5 rounded-xl border text-left text-sm transition-all flex items-center ${isSelected ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-medium shadow-sm' : 'hover:bg-slate-50 text-slate-700 border-slate-200'}`}
-                          >
-                            <span className={`w-6 h-6 flex items-center justify-center rounded-lg mr-3 text-xs font-bold ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500'}`}>{opt.key}</span>
-                            {opt.text}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {quizSubmitted && (
-                      <div className="bg-blue-50 p-4 rounded-xl text-xs text-blue-900 leading-relaxed border border-blue-200 mt-4">
-                        <strong>💡 Kunci Jawaban & Pembahasan ({KUIS_QUESTIONS[currentQuestionIndex].answer}):</strong> {KUIS_QUESTIONS[currentQuestionIndex].explanation}
-                      </div>
-                    )}
-
-                    <div className="flex justify-between border-t pt-4 mt-6">
-                      <button onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)} disabled={currentQuestionIndex === 0} className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold disabled:opacity-40">Sebelumnya</button>
-                      {currentQuestionIndex < KUIS_QUESTIONS.length - 1 ? (
-                        <button onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)} className="px-4 py-2 bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-sm">Berikutnya</button>
-                      ) : (
-                        !quizSubmitted && <button onClick={calculateScore} className="px-5 py-2 bg-rose-600 text-white rounded-xl text-xs font-bold shadow-sm hover:bg-rose-700">Kirim & Lihat Hasil</button>
-                      )}
-                    </div>
-
-                    {quizSubmitted && (
-                      <div className="bg-emerald-800 text-white p-6 rounded-2xl text-center mt-6 shadow-md">
-                        <p className="text-emerald-200 text-xs font-bold uppercase tracking-widest mb-1">Skor Akhir Ujian</p>
-                        <h4 className="text-3xl font-black">{score} / 100</h4>
-                        <button onClick={startQuiz} className="mt-4 bg-white text-emerald-800 font-bold text-xs px-4 py-2 rounded-lg hover:bg-emerald-50">Ulangi Kuis</button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </main>
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
-  </script>
-</body>
-</html>
+                {/* Sub Tab: Sel & Mikroskop */}
+                {(materiSubTab === 'sel' || materiSubTab === 'mikroskop')
