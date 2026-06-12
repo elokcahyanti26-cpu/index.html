@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduSel Kelas 8 SMP - Aplikasi Belajar Sel & Mikroskop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+    const MATERI_DATA = {
+      sel: {
+        title: "Pengenalan Sel",
+        subtitle: "Unit Terkecil Kehidupan",
+        sections: [
+          { title: "1. Apa itu Sel?", content: "Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh Robert Hooke pada tahun 1665.", badge: "Sejarah" },
+          { title: "2. Spesialisasi Sel", content: "• Uniseluler: Terdiri dari satu sel (Bakteri, Amoeba).\n• Multiseluler: Terdiri dari banyak sel (Manusia, Hewan, Tumbuhan).", badge: "Klasifikasi" },
+          { title: "3. Organel Sel", content: "• Nukleus: Pusat kendali sel.\n• Membran Sel: Mengatur keluar masuk zat.\n• Mitokondria: Penghasil energi.\n• Dinding Sel: Hanya pada tumbuhan, memberi bentuk kaku.", badge: "Organel" }
+        ]
+      },
+      mikroskop: {
+        title: "Mikroskop",
+        subtitle: "Melihat Dunia Mikro",
+        sections: [
+          { title: "1. Mengenal Mikroskop", content: "Alat bantu utama untuk mengamati objek mikroskopis yang tidak kasat mata.", badge: "Alat Optik" },
+          { title: "2. Bagian-Bagian Mikroskop", content: "• Optik: Lensa okuler, lensa objektif, diafragma, cermin.\n• Mekanik: Makrometer, mikrometer, revolver, meja preparat.", badge: "Struktur" }
+        ]
+      }
+    };
+    const KISIKISI_DATA = [
+      { no: "1", materi: "Pengenalan Sel", indikator: "Siswa dapat menjelaskan pengertian sel dan penemu sel." },
+      { no: "2", materi: "Organel Sel", indikator: "Siswa dapat mencocokkan nama organel sel dengan fungsinya." }
+    ];
+    const KUIS_QUESTIONS = [
+      { id: 1, question: "Siapakah ilmuwan yang pertama kali menemukan istilah sel?", options: [{key:"A", text:"Antony"}, {key:"B", text:"Robert Hooke"}], answer: "B", explanation: "Robert Hooke menemukan ruang kecil dari sayatan gabus yang disebut cell." }
+    ];
+    function App() {
+      const [activeTab, setActiveTab] = useState('materi');
+      const [subMateri, setSubMateri] = useState('sel');
+      return (
+        <div className="flex flex-col min-h-screen bg-slate-50">
+          <header className="bg-emerald-700 text-white shadow-md p-4">
+            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-black">EduSel Kelas 8</h1>
+                <p className="text-emerald-100 text-xs font-semibold">Media Belajar Sel & Mikroskop</p>
+              </div>
+              <nav className="flex bg-emerald-800 rounded-xl p-1 text-sm font-bold">
+                <button onClick={() => setActiveTab('materi')} className={`px-4 py-2 rounded-lg ${activeTab === 'materi' ? 'bg-white text-emerald-800' : 'text-emerald-100'}`}>Materi</button>
+                <button onClick={() => setActiveTab('kisikisi')} className={`px-4 py-2 rounded-lg ${activeTab === 'kisikisi' ? 'bg-white text-emerald-800' : 'text-emerald-100'}`}>Kisi-Kisi</button>
+              </nav>
+            </div>
+          </header>
+          <main className="flex-grow max-w-6xl w-full mx-auto px-4 py-8">
+            {activeTab === 'materi' && (
+              <div className="space-y-6">
+                <div className="flex gap-2 bg-white p-4 rounded-2xl shadow-sm border">
+                  <button onClick={() => setSubMateri('sel')} className={`px-4 py-2 rounded-xl text-sm font-bold ${subMateri === 'sel' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600'}`}>🧬 Pengenalan Sel</button>
+                  <button onClick={() => setSubMateri('mikroskop')} className={`px-4 py-2 rounded-xl text-sm font-bold ${subMateri === 'mikroskop' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-600'}`}>🔬 Alat Mikroskop</button>
+                </div>
+                <div className="bg-white p-6 rounded-3xl shadow-sm border">
+                  <h3 className="text-2xl font-black text-slate-900">{MATERI_DATA[subMateri]?.title}</h3>
+                  <div className="space-y-4 mt-4">
+                    {MATERI_DATA[subMateri]?.sections.map((sec, idx) => (
+                      <div key={idx} className="border-b pb-4 last:border-0">
+                        <h4 className="font-bold text-slate-800">{sec.title}</h4>
+                        <p className="text-slate-600 text-sm mt-1 whitespace-pre-line">{sec.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeTab === 'kisikisi' && (
+              <div className="bg-white p-6 rounded-3xl shadow-sm border overflow-x-auto">
+                <table className="w-full text-sm text-left border">
+                  <thead><tr className="bg-slate-100"><th className="p-3 border">No</th><th className="p-3 border">Materi</th><th className="p-3 border">Indikator Soal</th></tr></thead>
+                  <tbody>
+                    {KISIKISI_DATA.map((k, i) => (
+                      <tr key={i} className="border-b"><td className="p-3 border font-bold">{k.no}</td><td className="p-3 border font-semibold">{k.materi}</td><td className="p-3 border text-slate-600">{k.indikator}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
