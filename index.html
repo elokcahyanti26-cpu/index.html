@@ -37,63 +37,66 @@
 
     <div id="root"></div>
 
-    <script type="text/transform" data-plugins="transform-modules-umd"></script>
     <script type="text/text/babel">
         const { useState } = React;
 
         // ==========================================
-        // DATA KISI-KISI & MATERI LENGKAP
+        // DATA KISI-KISI
         // ==========================================
         const KISI_KISI_DATA = [
             { no: 1, topik: "Pengenalan Sel", indikator: "Siswa dapat menjelaskan pengertian sel dan mengidentifikasi penemu sel pertama kali.", level: "C1", tipe: "Pilihan Ganda" },
             { no: 2, topik: "Spesialisasi Sel", indikator: "Siswa dapat membedakan ciri-ciri organisme uniseluler dan multiseluler beserta contohnya.", level: "C2", tipe: "Pilihan Ganda" },
             { no: 3, topik: "Organel Sel", indikator: "Siswa dapat mencocokkan nama organel sel dengan fungsi spesifiknya di dalam sel.", level: "C3", tipe: "Pilihan Ganda" },
-            { no: 4, topik: "Perbedaan Sel", indikator: "Siswa dapat menganalisis perbedaan struktur sel tumbuhan dan sel hewan berdasarkan keberadaan organel tertentu.", level: "C4", tipe: "Benar/Salah & Pilihan Ganda Kompleks" },
-            { no: 5, topik: "Bagian Mikroskop", indikator: "Siswa dapat mengidentifikasi bagian optik dan mekanik pada mikroskop beserta fungsinya.", level: "C2", tipe: "Pilihan Ganda Kompleks & Menjodohkan" },
-            { no: 6, topik: "Langkah Kerja Mikroskop", indikator: "Siswa dapat mengurutkan langkah-langkah penggunaan mikroskop secara urut dan aman.", level: "C3", tipe: "Benar/Salah & Pilihan Ganda" }
+            { no: 4, topik: "Perbedaan Sel", indikator: "Siswa dapat menganalisis perbedaan struktur sel tumbuhan dan sel hewan berdasarkan keberadaan organel tertentu.", level: "C4", tipe: "Benar/Salah" },
+            { no: 5, topik: "Bagian Mikroskop", indikator: "Siswa dapat mengidentifikasi bagian optik dan mekanik pada mikroskop beserta fungsinya.", level: "C2", tipe: "Pilihan Ganda" }
         ];
 
+        // ==========================================
+        // DATA MATERI
+        // ==========================================
         const MATERI_DATA = {
             sel: [
                 {
                     title: "1. Apa itu Sel?",
                     badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
-                    content: "Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh Robert Hooke pada tahun 1665 saat mengamati sayatan gabus pohon ek di bawah mikroskop sederhana. Teori sel modern menyatakan bahwa semua makhluk hidup terdiri dari satu atau lebih sel, dan semua sel berasal dari sel yang sudah ada sebelumnya."
+                    content: "Sel adalah unit struktural dan fungsional terkecil dari makhluk hidup. Istilah sel pertama kali ditemukan oleh Robert Hooke pada tahun 1665 saat mengamati sayatan gabus pohon ek di bawah mikroskop sederhana. Teori sel modern menyatakan bahwa semua makhluk hidup terdiri dari satu atau lebih sel."
                 },
                 {
                     title: "2. Spesialisasi Sel (Uniseluler vs Multiseluler)",
                     badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-                    content: "Makhluk hidup dapat dibagi berdasarkan jumlah sel penyusunnya: \n\n1) Uniseluler: Organisme yang hanya terdiri dari satu sel tunggal (Contoh: Bakteri, Amoeba, Paramecium). \n2) Multiseluler: Organisme yang terdiri dari banyak sel yang bekerja sama (Contoh: Manusia, Hewan, Tumbuhan). Pada organisme multiseluler, terjadi spesialisasi sel di mana sel memiliki bentuk dan fungsi yang berbeda-beda."
+                    content: "Makhluk hidup dibagi berdasarkan jumlah sel penyusunnya:\n\n1) Uniseluler: Organisme yang hanya terdiri dari satu sel tunggal (Contoh: Bakteri, Amoeba, Paramecium).\n2) Multiseluler: Organisme yang terdiri dari banyak sel yang bekerja sama (Contoh: Manusia, Hewan, Tumbuhan). Pada organisme multiseluler, terjadi spesialisasi sel di mana sel memiliki bentuk dan fungsi yang berbeda-beda sesuai tempatnya."
                 },
                 {
-                    title: "3. Organel Sel (Bagian di dalam Sel)",
+                    title: "3. Organel Sel",
                     badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
-                    content: "Organel adalah struktur khusus di dalam sel yang menjalankan fungsi spesifik: \n\n- Nukleus (Inti Sel): Sebagai pusat kendali sel dan menyimpan informasi genetik (DNA).\n- Sitoplasma: Cairan tempat berlangsungnya reaksi kimia sel.\n- Membran Sel: Pelindung sel yang mengatur keluar masuknya zat.\n- Mitokondria: Tempat penghasil energi (respirasi sel).\n- Vakuola: Tempat menyimpan air dan makanan.\n- Kloroplas (hanya pada tumbuhan): Tempat terjadinya fotosintesis.\n- Dinding Sel (hanya pada tumbuhan): Memberi bentuk kaku dan perlindungan ekstra."
+                    content: "- Nukleus (Inti Sel): Pusat kendali sel dan menyimpan DNA.\n- Sitoplasma: Cairan tempat berlangsungnya metabolisme.\n- Membran Sel: Mengatur keluar masuknya zat.\n- Mitokondria: Tempat penghasil energi sel.\n- Kloroplas & Dinding Sel: Hanya ada pada tumbuhan untuk fotosintesis dan pelindung kaku."
                 }
             ],
             mikroskop: [
                 {
                     title: "1. Mengenal Mikroskop",
                     badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
-                    content: "Mikroskop adalah alat bantu utama untuk mengamati objek-objek berukuran sangat kecil (mikroskopis) seperti sel bakteri, jaringan tumbuhan, maupun protozoa yang tidak kasat mata. Penemu mikroskop dua lensa secara luas adalah Zacharias Janssen pada tahun 1590, diikuti oleh penyempurnaan oleh Antony van Leeuwenhoek."
+                    content: "Mikroskop adalah alat bantu utama untuk mengamati objek-objek berukuran sangat kecil (mikroskopis) yang tidak kasat mata. Alat ini memungkinkan kita melihat detail struktur sel hewan maupun tumbuhan dengan perbesaran tertentu."
                 },
                 {
                     title: "2. Bagian-Bagian Mikroskop",
                     badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
-                    content: "Secara umum, mikroskop memiliki dua bagian utama:\n\n1) Bagian Optik (berhubungan dengan cahaya & lensa): Terdiri dari Lensa Okuler (dekat mata pengamat), Lensa Objektif (dekat objek), Kondensor (mengumpulkan cahaya), Diafragma (mengatur jumlah cahaya), dan Cermin/Lampu sebagai sumber cahaya.\n\n2) Bagian Mekanik (berhubungan dengan penyangga): Terdiri dari Makrometer (pemutar kasar untuk fokus cepat), Mikrometer (pemutar halus untuk menajamkan gambar), Revolver (pemilih pembesaran lensa), Meja Preparat (tempat objek), dan Penjepit Objek."
+                    content: "1) Bagian Optik: Terdiri dari Lensa Okuler (dekat mata), Lensa Objektif (dekat objek), Kondensor, Diafragma (mengatur cahaya), dan Cermin/Lampu.\n\n2) Bagian Mekanik: Terdiri dari Makrometer (pemutar kasar), Mikrometer (pemutar halus), Revolver (pemilih lensa), Meja Preparat, dan Penjepit Objek."
                 },
                 {
-                    title: "3. Langkah-Langkah Menggunakan Mikroskop",
+                    title: "3. Langkah Penggunaan",
                     badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
-                    content: "1) Letakkan mikroskop di meja yang rata dengan memegang lengan mikroskop dan menyangga kakinya.\n2) Putar revolver untuk memilih lensa objektif perbesaran terendah.\n3) Atur cermin dan diafragma agar lapang pandang terlihat terang maksimal.\n4) Letakkan preparat di meja objek lalu jepit.\n5) Putar makrometer untuk mendekatkan lensa objektif ke preparat sambil dilihat dari samping.\n6) Intip melalui lensa okuler, lalu putar makrometer ke atas secara perlahan hingga objek terlihat.\n7) Putar mikrometer untuk memfokuskan objek agar gambar terlihat tajam."
+                    content: "Atur posisi mikroskop di meja yang rata, pilih perbesaran lensa objektif paling kecil menggunakan revolver, atur cahaya lewat diafragma hingga lapang pandang terang, letakkan preparat, kemudian gunakan makrometer dan mikrometer secara perlahan untuk mencari fokus objek."
                 }
             ]
         };
 
+        // ==========================================
+        // DATA KUIS
+        // ==========================================
         const INTERACTIVE_QUIZ_QUESTIONS = [
             {
                 id: 1,
-                type: "pilihan-ganda",
                 question: "Siapakah ilmuwan yang pertama kali menemukan istilah 'sel' pada tahun 1665 saat mengamati sayatan gabus?",
                 options: [
                     { key: "A", text: "Antony van Leeuwenhoek" },
@@ -102,11 +105,10 @@
                     { key: "D", text: "Theodor Schwann" }
                 ],
                 answer: "B",
-                explanation: "Robert Hooke adalah ilmuwan pertama yang menemukan ruang-ruang kecil kosong dari sayatan gabus pohon ek yang kemudian ia sebut dengan nama 'cell' (sel)."
+                explanation: "Robert Hooke adalah ilmuwan pertama yang mendokumentasikan sel dari sayatan gabus gabus pohon ek menggunakan mikroskop rancangannya."
             },
             {
                 id: 2,
-                type: "pilihan-ganda",
                 question: "Manakah di bawah ini yang merupakan contoh organisme uniseluler?",
                 options: [
                     { key: "A", text: "Amoeba dan Bakteri" },
@@ -115,327 +117,9 @@
                     { key: "D", text: "Semut dan Ganggang Hijau" }
                 ],
                 answer: "A",
-                explanation: "Amoeba dan Bakteri adalah contoh organisme uniseluler, yaitu makhluk hidup yang seluruh aktivitas hidupnya dilakukan oleh satu sel tunggal saja."
+                explanation: "Amoeba dan Bakteri hidup mandiri secara independen hanya dengan satu sel tunggal (uniseluler)."
             },
             {
                 id: 3,
-                type: "pilihan-ganda",
                 question: "Organel sel yang berfungsi sebagai pusat kendali seluruh aktivitas sel dan menyimpan materi genetik (DNA) adalah...",
-                options: [
-                    { key: "A", text: "Mitokondria" },
-                    { key: "B", text: "Sitoplasma" },
-                    { key: "C", text: "Nukleus" },
-                    { key: "D", text: "Kloroplas" }
-                ],
-                answer: "C",
-                explanation: "Nukleus atau inti sel bertindak sebagai otak sel yang mengontrol semua kegiatan seluler dan membawa informasi keturunan (DNA)."
-            },
-            {
-                id: 4,
-                type: "benar-salah",
-                question: "Pernyataan: 'Sel tumbuhan memiliki struktur pelindung luar yang kaku dan tidak dimiliki oleh sel hewan. Struktur tersebut adalah Dinding Sel.'",
-                options: [
-                    { key: "A", text: "Benar" },
-                    { key: "B", text: "Salah" }
-                ],
-                answer: "A",
-                explanation: "Benar. Dinding sel hanya ditemukan pada sel tumbuhan dan berfungsi memberikan perlindungan mekanis serta mempertahankan bentuk sel agar tetap kaku."
-            },
-            {
-                id: 5,
-                type: "pilihan-ganda",
-                question: "Pada mikroskop, bagian mekanik yang digunakan untuk memutar dan memilih perbesaran lensa objektif yang diinginkan disebut...",
-                options: [
-                    { key: "A", text: "Makrometer" },
-                    { key: "B", text: "Revolver" },
-                    { key: "C", text: "Diafragma" },
-                    { key: "D", text: "Kondensor" }
-                ],
-                answer: "B",
-                explanation: "Revolver adalah lempengan cakram yang dapat diputar untuk memindahkan posisi lensa objektif dengan variasi perbesaran yang berbeda."
-            }
-        ];
-
-        // ==========================================
-        // KOMPONEN UTAMA APLIKASI
-        // ==========================================
-        function App() {
-            const [activeTab, setActiveTab] = useState('kisi'); // 'kisi', 'materi', 'kuis'
-            const [materiSubTab, setMateriSubTab] = useState('sel'); // 'sel', 'mikroskop'
-            
-            // State untuk Kuis
-            const [quizStarted, setQuizStarted] = useState(false);
-            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-            const [userAnswers, setUserAnswers] = useState({});
-            const [quizSubmitted, setQuizSubmitted] = useState(false);
-            const [score, setScore] = useState(0);
-
-            const startQuiz = () => {
-                setQuizStarted(true);
-                setCurrentQuestionIndex(0);
-                setUserAnswers({});
-                setQuizSubmitted(false);
-                setScore(0);
-            };
-
-            const handleSelectAnswer = (optionKey) => {
-                if (quizSubmitted) return;
-                setUserAnswers({
-                    ...userAnswers,
-                    [currentQuestionIndex]: optionKey
-                });
-            };
-
-            const calculateScore = () => {
-                let correctCount = 0;
-                INTERACTIVE_QUIZ_QUESTIONS.forEach((q, idx) => {
-                    if (userAnswers[idx] === q.answer) {
-                        correctCount++;
-                    }
-                });
-                const finalScore = Math.round((correctCount / INTERACTIVE_QUIZ_QUESTIONS.length) * 100);
-                setScore(finalScore);
-                setQuizSubmitted(true);
-            };
-
-            return (
-                <div className="flex flex-col min-h-screen bg-slate-50">
-                    {/* BAR NAVIGASI ATAS */}
-                    <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-                        <div className="max-w-5xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-emerald-600 text-white p-2 rounded-xl shadow-md shadow-emerald-100">
-                                    <i className="fa-solid fa-graduation-cap text-xl"></i>
-                                </div>
-                                <div>
-                                    <h1 className="text-xl font-bold text-slate-800 tracking-tight">EduSel Kelas 8</h1>
-                                    <p className="text-xs text-slate-500 font-medium">Media Belajar Struktur Sel & Mikroskop SMP</p>
-                                </div>
-                            </div>
-                            
-                            {/* TAB NAVIGASI */}
-                            <nav className="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60">
-                                <button 
-                                    onClick={() => setActiveTab('kisi')}
-                                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${activeTab === 'kisi' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-                                >
-                                    <i className="fa-solid fa-table-list mr-2"></i>Kisi-Kisi
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab('materi')}
-                                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${activeTab === 'materi' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-                                >
-                                    <i className="fa-solid fa-book-open mr-2"></i>Materi
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab('kuis')}
-                                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${activeTab === 'kuis' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-                                >
-                                    <i className="fa-solid fa-vial-circle-check mr-2"></i>Kuis Interaktif
-                                </button>
-                            </nav>
-                        </div>
-                    </header>
-
-                    {/* MAIN CONTENT AREA */}
-                    <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8">
-                        
-                        {/* TAB 1: KISI-KISI */}
-                        {activeTab === 'kisi' && (
-                            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 animate-fade-in">
-                                <div className="border-b border-slate-100 pb-4 mb-6">
-                                    <h2 className="text-lg font-bold text-slate-800">📋 Rencana Asesmen / Kisi-Kisi Soal</h2>
-                                    <p className="text-sm text-slate-500">Pemetaan target kompetensi dan indikator ketercapaian materi Bab Sel.</p>
-                                </div>
-                                <div className="overflow-x-auto rounded-xl border border-slate-200">
-                                    <table className="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr className="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-wider">
-                                                <th className="p-4 border-r border-slate-200 text-center w-12">No</th>
-                                                <th className="p-4 border-r border-slate-200 w-40">Materi / Topik</th>
-                                                <th className="p-4 border-r border-slate-200">Indikator Soal</th>
-                                                <th className="p-4 border-r border-slate-200 text-center w-24">Kognitif</th>
-                                                <th className="p-4 text-center w-40">Tipe Soal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-sm divide-y divide-slate-200">
-                                            {KISI_KISI_DATA.map((item) => (
-                                                <tr key={item.no} className="hover:bg-slate-50/80 transition-colors">
-                                                    <td className="p-4 border-r border-slate-200 text-center font-semibold text-slate-500">{item.no}</td>
-                                                    <td className="p-4 border-r border-slate-200 font-semibold text-slate-800">{item.topik}</td>
-                                                    <td className="p-4 border-r border-slate-200 text-slate-600 leading-relaxed">{item.indikator}</td>
-                                                    <td className="p-4 border-r border-slate-200 text-center font-bold text-amber-600 bg-amber-50/30">{item.level}</td>
-                                                    <td className="p-4 text-center font-medium text-slate-600">{item.tipe}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* TAB 2: MATERI */}
-                        {activeTab === 'materi' && (
-                            <div className="space-y-6">
-                                {/* Sub Navigation Materi */}
-                                <div className="flex gap-2 border-b border-slate-200 pb-2">
-                                    <button 
-                                        onClick={() => setMateriSubTab('sel')}
-                                        className={`px-4 py-2 font-bold text-sm border-b-2 transition-all ${materiSubTab === 'sel' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-500'}`}
-                                    >
-                                        💡 Pembelajaran Sel
-                                    </button>
-                                    <button 
-                                        onClick={() => setMateriSubTab('mikroskop')}
-                                        className={`px-4 py-2 font-bold text-sm border-b-2 transition-all ${materiSubTab === 'mikroskop' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-slate-500'}`}
-                                    >
-                                        🔬 Alat Mikroskop
-                                    </button>
-                                </div>
-
-                                {/* Render Materi List */}
-                                <div className="grid gap-6">
-                                    {MATERI_DATA[materiSubTab].map((card, index) => (
-                                        <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
-                                            <span className={`inline-block text-xs px-2.5 py-1 font-bold rounded-lg mb-3 border ${card.badgeColor}`}>
-                                                {materiSubTab === 'sel' ? 'Materi Sel' : 'Materi Mikroskop'}
-                                            </span>
-                                            <h3 className="text-lg font-bold text-slate-800 mb-3">{card.title}</h3>
-                                            <p className="text-slate-600 leading-relaxed whitespace-pre-line text-sm sm:text-base">
-                                                {card.content}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* TAB 3: KUIS INTERAKTIF */}
-                        {activeTab === 'kuis' && (
-                            <div className="max-w-2xl mx-auto">
-                                {!quizStarted ? (
-                                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center">
-                                        <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-emerald-100">
-                                            <i className="fa-solid fa-stopwatch"></i>
-                                        </div>
-                                        <h2 className="text-xl font-bold text-slate-800 mb-2">Evaluasi Mandiri: Bab Sel & Mikroskop</h2>
-                                        <p className="text-sm text-slate-500 max-w-md mx-auto mb-6">
-                                            Uji pemahamanmu mengenai struktur sel dan komponen mikroskop melalui kuis interaktif 5 nomor ini.
-                                        </p>
-                                        <button 
-                                            onClick={startQuiz}
-                                            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl shadow-md transition-all"
-                                        >
-                                            Mulai Kuis Sekarang
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                                        {/* Header Kuis */}
-                                        <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-6">
-                                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                                Soal {currentQuestionIndex + 1} dari {INTERACTIVE_QUIZ_QUESTIONS.length}
-                                            </span>
-                                            {quizSubmitted && (
-                                                <span className="text-sm font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">
-                                                    Skor: {score} / 100
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        {/* Pertanyaan */}
-                                        <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-6 leading-snug">
-                                            {INTERACTIVE_QUIZ_QUESTIONS[currentQuestionIndex].question}
-                                        </h3>
-
-                                        {/* Pilihan Jawaban */}
-                                        <div className="grid gap-3 mb-6">
-                                            {INTERACTIVE_QUIZ_QUESTIONS[currentQuestionIndex].options.map((opt) => {
-                                                const isSelected = userAnswers[currentQuestionIndex] === opt.key;
-                                                const isCorrect = INTERACTIVE_QUIZ_QUESTIONS[currentQuestionIndex].answer === opt.key;
-                                                
-                                                let btnStyle = "border-slate-200 hover:bg-slate-50";
-                                                if (isSelected) btnStyle = "border-emerald-600 bg-emerald-50/40 text-emerald-700 font-medium";
-                                                if (quizSubmitted) {
-                                                    if (isCorrect) btnStyle = "border-green-500 bg-green-50 text-green-700 font-medium";
-                                                    else if (isSelected && !isCorrect) btnStyle = "border-red-500 bg-red-50 text-red-700";
-                                                }
-
-                                                return (
-                                                    <button
-                                                        key={opt.key}
-                                                        disabled={quizSubmitted}
-                                                        onClick={() => handleSelectAnswer(opt.key)}
-                                                        className={`w-full text-left p-4 rounded-xl border transition-all flex items-center gap-3 text-sm ${btnStyle}`}
-                                                    >
-                                                        <span className={`w-6 h-6 flex items-center justify-center rounded-lg text-xs font-bold ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
-                                                            {opt.key}
-                                                        </span>
-                                                        <span>{opt.text}</span>
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-
-                                        {/* Keterangan Pembahasan (Jika sudah disubmit) */}
-                                        {quizSubmitted && (
-                                            <div className="p-4 bg-blue-50/60 border border-blue-100 rounded-xl text-sm mb-6 leading-relaxed">
-                                                <strong className="text-blue-800 block mb-1">💡 Pembahasan:</strong>
-                                                <p className="text-blue-900">{INTERACTIVE_QUIZ_QUESTIONS[currentQuestionIndex].explanation}</p>
-                                            </div>
-                                        )}
-
-                                        {/* Kontrol Navigasi Kuis */}
-                                        <div className="flex justify-between items-center border-t border-slate-100 pt-4">
-                                            <button
-                                                disabled={currentQuestionIndex === 0}
-                                                onClick={() => setCurrentQuestionIndex(currentQuestionIndex - 1)}
-                                                className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 disabled:opacity-40"
-                                            >
-                                                Kembali
-                                            </button>
-
-                                            {currentQuestionIndex < INTERACTIVE_QUIZ_QUESTIONS.length - 1 ? (
-                                                <button
-                                                    onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
-                                                    className="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-sm font-medium"
-                                                >
-                                                    Selanjutnya
-                                                </button>
-                                            ) : (
-                                                !quizSubmitted && (
-                                                    <button
-                                                        onClick={calculateScore}
-                                                        className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm"
-                                                    >
-                                                        Kumpulkan Kuis
-                                                    </button>
-                                                )
-                                            )}
-                                        </div>
-
-                                        {quizSubmitted && (
-                                            <div className="text-center mt-6">
-                                                <button 
-                                                    onClick={startQuiz}
-                                                    className="text-xs font-bold text-emerald-600 hover:underline"
-                                                >
-                                                    <i className="fa-solid fa-arrow-rotate-left mr-1"></i> Ulangi Kuis dari Awal
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </main>
-                </div>
-            );
-        }
-
-        // Render React App ke DOM
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+                options:
